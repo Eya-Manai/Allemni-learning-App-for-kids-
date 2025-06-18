@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 
 class YellowButton extends StatelessWidget {
   final String text;
-  const YellowButton({super.key, required this.text});
+  final VoidCallback? onPressed;
+
+  const YellowButton({super.key, required this.text, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primaryYellow,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

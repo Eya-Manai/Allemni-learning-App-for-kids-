@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "586906850354",
+    "project_id": "allemni-f47c3",
+    "storage_bucket": "allemni-f47c3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:586906850354:android:76eda46a8d5b21a923582b",
+        "android_client_info": {
+          "package_name": "com.example.allemni"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMPsfJmzyWxOh348Bem2xwOyyYg7dXwDM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

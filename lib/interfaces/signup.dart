@@ -15,6 +15,9 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
+  final _nameFamilyNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,23 +63,23 @@ class _SignupState extends State<Signup> {
           child: BuildLabel('الاسم واللقب'),
         ),
         const SizedBox(height: 10),
-        BuildInputField(obscure: false),
+        BuildInputField(obscure: false, controller: _nameFamilyNameController),
         const SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.only(right: 24),
           child: BuildLabel('البريد الإلكتروني'),
         ),
         const SizedBox(height: 10),
-        BuildInputField(obscure: false),
+        BuildInputField(obscure: false, controller: _emailController),
         const SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.only(right: 24),
           child: BuildLabel('كلمة المرور'),
         ),
         const SizedBox(height: 10),
-        BuildInputField(obscure: false),
+        BuildInputField(obscure: true, controller: _passwordController),
         const SizedBox(height: 20),
-        Center(child: YellowButton(text: 'دخول')),
+        Center(child: YellowButton(text: 'إنشاء حساب')),
         const SizedBox(height: 20),
         _buildSignInLink(),
       ],
