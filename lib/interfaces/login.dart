@@ -1,5 +1,7 @@
 import 'package:allemni/constants/colors.dart';
+import 'package:allemni/constants/toast.dart';
 import 'package:allemni/routes/routes.dart';
+import 'package:allemni/services/firebase_auth_services.dart';
 import 'package:allemni/widgets/draw_background.dart';
 import 'package:allemni/widgets/draw_input_field.dart';
 import 'package:allemni/widgets/draw_title.dart';
@@ -18,32 +20,36 @@ class LoginInterface extends StatefulWidget {
 class _LoginInterfaceState extends State<LoginInterface> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
+  final FirebaseAuthServices _auth = FirebaseAuthServices();
+  bool _isLoggingIn = false;
   Future<void> _login() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('الرجاء إدخال البريد وكلمة المرور'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      showToast(message: "الرجاء ادخال البريد الالكتروني و كلمة المرور");
       return;
     }
-
+    setState(() {
+      _isLoggingIn = true;
+    });
     try {
-      final userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-      //ignore: avoid_print
-      print("✅ Login success: ${userCredential.user?.uid}");
+      final user = await _auth.signInWithEmailAndPassword(email, password);
+      setState(() {
+        _isLoggingIn = false;
+      });
+      if (user != null) {
+        //ignore: avoid_print
+        print("✅ Login success: ${user.uid}");
+      }
     } on FirebaseAuthException catch (e) {
+      setState(() {
+        _isLoggingIn = false;
+      });
       //ignore: avoid_print
-      print('🔥 FirebaseAuthException code: ${e.code}');
+      print("FirebaseAuthException code: ${e.code}");
       //ignore: avoid_print
-      print('🔥 FirebaseAuthException message: ${e.message}');
-
+      print("FirebaseAuthException message: ${e.message}");
       String errorMsg;
       switch (e.code) {
         case 'invalid-email':
@@ -55,24 +61,14 @@ class _LoginInterfaceState extends State<LoginInterface> {
         case 'wrong-password':
           errorMsg = 'كلمة السر غير صحيحة.';
           break;
+        case 'invalid-credential':
+          errorMsg = 'بيانات الدخول غير صحيحة.';
+          break;
         default:
           errorMsg = 'حدث خطأ: ${e.code}';
       }
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMsg), backgroundColor: Colors.red),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('حدث خطأ أثناء تسجيل الدخول.'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      showToast(message: errorMsg);
     }
   }
 
@@ -100,6 +96,16 @@ class _LoginInterfaceState extends State<LoginInterface> {
                     onPressed: () {
                       _login();
                     },
+                    child: _isLoggingIn
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              color: AppColors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : null,
                   ),
                   const SizedBox(height: 20),
                   _buildSignUpLink(),
