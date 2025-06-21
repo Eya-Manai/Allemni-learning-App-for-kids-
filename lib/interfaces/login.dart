@@ -9,6 +9,8 @@ import 'package:allemni/widgets/draw_label.dart';
 import 'package:allemni/widgets/draw_yellow_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginInterface extends StatefulWidget {
   const LoginInterface({super.key});
@@ -72,6 +74,42 @@ class _LoginInterfaceState extends State<LoginInterface> {
     }
   }
 
+  Future<void> _signInWithGoogle() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    setState(() {
+      _isLoggingIn = true;
+    });
+    try {
+      final GoogleSignInAccount? googleSignInAccount = await googleSignIn
+          .signIn();
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
+
+        final AuthCredential authCredential = GoogleAuthProvider.credential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken,
+        );
+        await FirebaseAuth.instance.signInWithCredential(authCredential);
+
+        setState(() {
+          _isLoggingIn = false;
+        });
+      }
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        _isLoggingIn = false;
+      });
+      showToast(message: 'فشل تسجيل الدخول باستخدام جوجل: ${e.code}');
+    } catch (e) {
+      setState(() {
+        _isLoggingIn = false;
+      });
+      showToast(message: "حدث خطأ أثناء تسجيل الدخول باستخدام جوجل.");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,6 +146,7 @@ class _LoginInterfaceState extends State<LoginInterface> {
                         : null,
                   ),
                   const SizedBox(height: 20),
+                  _buildGoogleSignInButton(_isLoggingIn, _signInWithGoogle),
                   _buildSignUpLink(),
                 ],
               ),
@@ -149,6 +188,34 @@ class _LoginInterfaceState extends State<LoginInterface> {
         const SizedBox(height: 10),
         BuildInputField(obscure: true, controller: _passwordController),
       ],
+    );
+  }
+
+  Widget _buildGoogleSignInButton(bool isLogginIn, VoidCallback onPressed) {
+    return MaterialButton(
+      onPressed: isLogginIn ? null : onPressed,
+      color: AppColors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: 2,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const FaIcon(
+            FontAwesomeIcons.google,
+            color: AppColors.primaryYellow,
+            size: 24,
+          ),
+          const SizedBox(width: 10),
+          const Text(
+            'تسجيل الدخول باستخدام جوجل',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+              fontFamily: 'childFont',
+            ),
+          ),
+        ],
+      ),
     );
   }
 

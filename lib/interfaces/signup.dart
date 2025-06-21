@@ -144,9 +144,17 @@ class _SignupState extends State<Signup> {
       children: [
         Padding(
           padding: const EdgeInsets.only(right: 24),
-          child: BuildLabel('الاسم واللقب'),
+          child: BuildLabel('الاسم '),
         ),
         const SizedBox(height: 10),
+        BuildInputField(obscure: false, controller: _nameFamilyNameController),
+        const SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.only(right: 24),
+          child: BuildLabel('اللقب '),
+        ),
+        const SizedBox(height: 10),
+
         BuildInputField(obscure: false, controller: _nameFamilyNameController),
         const SizedBox(height: 20),
         Padding(
