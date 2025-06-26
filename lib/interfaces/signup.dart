@@ -7,6 +7,7 @@ import 'package:allemni/widgets/draw_input_field.dart';
 import 'package:allemni/widgets/draw_title.dart';
 import 'package:allemni/widgets/draw_label.dart';
 import 'package:allemni/widgets/draw_yellow_button.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,8 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
-  final _nameFamilyNameController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _familyNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final FirebaseAuthServices _auth = FirebaseAuthServices();
@@ -26,7 +28,8 @@ class _SignupState extends State<Signup> {
 
   @override
   void dispose() {
-    _nameFamilyNameController.dispose();
+    _firstNameController.dispose();
+    _familyNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -58,12 +61,16 @@ class _SignupState extends State<Signup> {
         _isSigningUp = false;
       });
 
-      if (user != null) {
+      if (user != null && user.uid.isNotEmpty) {
         setState(() {
           _isSigningUp = false;
         });
-        // await user.updateProfile(displayName: nameFamilyName);
-        //await user.reload();
+        _addUserDetails(
+          user.uid,
+          _firstNameController.text.trim(),
+          _familyNameController.text.trim(),
+          _emailController.text.trim(),
+        );
         //ignore: avoid_print
         print("user created successfully: ${user.uid}");
         Navigator.pushNamed(context, Routes.parentHome);
@@ -99,6 +106,27 @@ class _SignupState extends State<Signup> {
         _isSigningUp = false;
       });
       showToast(message: "حدث خطأ غير متوقع أثناء إنشاء الحساب.");
+    }
+  }
+
+  Future<void> _addUserDetails(
+    String uid,
+    String firstname,
+    String familyname,
+    String email,
+  ) async {
+    try {
+      await FirebaseFirestore.instance.collection("Users").doc(uid).set({
+        "first_name": firstname,
+        "family_name": familyname,
+        "email": email,
+      });
+      //ignore: avoid_print
+      print("✅ Données utilisateur enregistrées !");
+    } catch (e) {
+      //ignore: avoid_print
+      print("❌ Erreur Firestore: $e");
+      showToast(message: "فشل في حفظ معلومات المستخدم.");
     }
   }
 
@@ -147,7 +175,7 @@ class _SignupState extends State<Signup> {
           child: BuildLabel('الاسم '),
         ),
         const SizedBox(height: 10),
-        BuildInputField(obscure: false, controller: _nameFamilyNameController),
+        BuildInputField(obscure: false, controller: _firstNameController),
         const SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.only(right: 24),
@@ -155,7 +183,7 @@ class _SignupState extends State<Signup> {
         ),
         const SizedBox(height: 10),
 
-        BuildInputField(obscure: false, controller: _nameFamilyNameController),
+        BuildInputField(obscure: false, controller: _familyNameController),
         const SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.only(right: 24),
