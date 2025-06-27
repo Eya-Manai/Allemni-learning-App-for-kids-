@@ -4,6 +4,8 @@ import 'package:allemni/services/firebase_auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+enum Gender { male, female }
+
 class Parenthome extends StatefulWidget {
   const Parenthome({super.key});
 
@@ -14,10 +16,15 @@ class Parenthome extends StatefulWidget {
 class _ParenthomeState extends State<Parenthome> {
   final FirebaseAuthServices auth = FirebaseAuthServices();
   final user = FirebaseAuth.instance.currentUser;
+  //final String parentIconasset=parentGender==Gender.male? 'assets/images/dad.png';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Parent Home')),
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: AppColors.white,
+        // leading: IconButton(onPressed: ()=>Navigator.of(context).pop(), icon: Image(image: image)),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -26,6 +26,8 @@ class _SignupState extends State<Signup> {
   final _phoneNumberController = TextEditingController();
   final FirebaseAuthServices _auth = FirebaseAuthServices();
   bool _isSigningUp = false;
+  String? _selectedGender;
+  final List<String> _genders = ['ذكر', 'أنثى'];
 
   @override
   void dispose() {
@@ -64,6 +66,11 @@ class _SignupState extends State<Signup> {
     setState(() {
       _isSigningUp = true;
     });
+
+    if (_selectedGender == null) {
+      showToast(message: "رجى اختيار الجنس");
+      return;
+    }
 
     try {
       User? user = await _auth.signUpWithEmailAndPassword(email, password);
@@ -135,6 +142,7 @@ class _SignupState extends State<Signup> {
         "family_name": familyname,
         "email": email,
         "phone_number": phone,
+        "gender": _selectedGender,
       });
       //ignore: avoid_print
       print("✅ Données utilisateur enregistrées !");
@@ -207,6 +215,38 @@ class _SignupState extends State<Signup> {
         const SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.only(right: 24),
+          child: BuildLabel('الجنس'),
+        ),
+        const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: AppColors.lightYellow,
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: _selectedGender,
+                hint: const Text('اختر الجنس'),
+                icon: const Icon(Icons.arrow_drop_down),
+                isExpanded: true,
+                items: _genders.map((gender) {
+                  return DropdownMenuItem(value: gender, child: Text(gender));
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedGender = value;
+                  });
+                },
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.only(right: 24),
           child: BuildLabel('رقم الهاتف '),
         ),
         const SizedBox(height: 10),
@@ -228,6 +268,7 @@ class _SignupState extends State<Signup> {
         const SizedBox(height: 10),
         BuildInputField(obscure: true, controller: _passwordController),
         const SizedBox(height: 20),
+
         Center(
           child: YellowButton(
             text: 'إنشاء حساب',
