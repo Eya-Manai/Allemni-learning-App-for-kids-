@@ -6,14 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  try {
-    await Firebase.initializeApp();
-    //ignore: avoid_print
-    print("✅ Firebase initialized");
-  } catch (e, s) {
-    //ignore: avoid_print
-    print("🔥 Firebase init FAILED: $e\n$s");
-  }
+  await Firebase.initializeApp();
 
   runApp(const MyApp());
 }

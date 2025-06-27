@@ -43,6 +43,12 @@ class _LoginInterfaceState extends State<LoginInterface> {
       if (user != null) {
         //ignore: avoid_print
         print("✅ Login success: ${user.uid}");
+        if (!mounted) return;
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          Routes.parentHome,
+          (route) => false,
+        );
       }
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -128,7 +134,9 @@ class _LoginInterfaceState extends State<LoginInterface> {
                   BuildTitle("تسجيل الدخول"),
                   const SizedBox(height: 30),
                   _buildInputSection(),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 20),
+                  _buildForgetPasswordLink(),
+                  const SizedBox(height: 20),
                   YellowButton(
                     text: 'دخول',
                     onPressed: () {
@@ -227,6 +235,27 @@ class _LoginInterfaceState extends State<LoginInterface> {
         },
         child: Text(
           'ليس لديك حساب؟',
+          style: TextStyle(
+            fontSize: 20,
+            fontFamily: 'childFont',
+
+            color: AppColors.darkGreen,
+            decoration: TextDecoration.underline,
+            decorationColor: AppColors.darkGreen,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildForgetPasswordLink() {
+    return Center(
+      child: InkWell(
+        onTap: () {
+          Navigator.pushNamed(context, Routes.forgetPassword);
+        },
+        child: Text(
+          'نسيت كلمة المرور؟',
           style: TextStyle(
             fontSize: 20,
             fontFamily: 'childFont',

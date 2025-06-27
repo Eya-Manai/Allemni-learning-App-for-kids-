@@ -23,6 +23,7 @@ class _SignupState extends State<Signup> {
   final _familyNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
   final FirebaseAuthServices _auth = FirebaseAuthServices();
   bool _isSigningUp = false;
 
@@ -31,6 +32,7 @@ class _SignupState extends State<Signup> {
     _firstNameController.dispose();
     _familyNameController.dispose();
     _emailController.dispose();
+    _phoneNumberController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -39,6 +41,7 @@ class _SignupState extends State<Signup> {
     // String nameFamilyName = _nameFamilyNameController.text.trim();
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
+    String phone = _phoneNumberController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
       showToast(message: "يرجى ملء جميع الحقول");
@@ -47,6 +50,15 @@ class _SignupState extends State<Signup> {
 
     if (password.length < 8) {
       showToast(message: "كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل");
+      return;
+    }
+    if (phone.isEmpty) {
+      showToast(message: "يرجى إدخال رقم الهاتف");
+      return;
+    }
+
+    if (!_isValidPoneNumber(phone)) {
+      showToast(message: ".رقم الهاتف غير صالح");
       return;
     }
     setState(() {
@@ -70,6 +82,7 @@ class _SignupState extends State<Signup> {
           _firstNameController.text.trim(),
           _familyNameController.text.trim(),
           _emailController.text.trim(),
+          _phoneNumberController.text.trim(),
         );
         //ignore: avoid_print
         print("user created successfully: ${user.uid}");
@@ -114,12 +127,14 @@ class _SignupState extends State<Signup> {
     String firstname,
     String familyname,
     String email,
+    String phone,
   ) async {
     try {
       await FirebaseFirestore.instance.collection("Users").doc(uid).set({
         "first_name": firstname,
         "family_name": familyname,
         "email": email,
+        "phone_number": phone,
       });
       //ignore: avoid_print
       print("✅ Données utilisateur enregistrées !");
@@ -128,6 +143,11 @@ class _SignupState extends State<Signup> {
       print("❌ Erreur Firestore: $e");
       showToast(message: "فشل في حفظ معلومات المستخدم.");
     }
+  }
+
+  bool _isValidPoneNumber(String phone) {
+    final regex = RegExp(r'^[245793]\d{7}$');
+    return regex.hasMatch(phone);
   }
 
   @override
@@ -185,6 +205,15 @@ class _SignupState extends State<Signup> {
 
         BuildInputField(obscure: false, controller: _familyNameController),
         const SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.only(right: 24),
+          child: BuildLabel('رقم الهاتف '),
+        ),
+        const SizedBox(height: 10),
+
+        BuildInputField(obscure: false, controller: _phoneNumberController),
+        const SizedBox(height: 20),
+
         Padding(
           padding: const EdgeInsets.only(right: 24),
           child: BuildLabel('البريد الإلكتروني'),

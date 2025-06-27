@@ -1,4 +1,5 @@
 import 'package:allemni/constants/colors.dart';
+import 'package:allemni/routes/routes.dart';
 import 'package:allemni/services/firebase_auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,16 @@ class _ParenthomeState extends State<Parenthome> {
               style: TextStyle(fontSize: 18),
             ),
             MaterialButton(
-              onPressed: auth.signOut,
+              onPressed: () async {
+                await auth.signOut();
+                if (!mounted) return;
+                Navigator.pushNamedAndRemoveUntil(
+                  // ignore: use_build_context_synchronously
+                  context,
+                  Routes.login,
+                  (route) => false,
+                );
+              },
               color: AppColors.pink,
               textColor: AppColors.black,
               shape: RoundedRectangleBorder(
