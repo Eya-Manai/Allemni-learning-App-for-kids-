@@ -21,36 +21,54 @@ class _ParenthomeState extends State<Parenthome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const Navbar(),
+      backgroundColor: Colors.transparent,
       body: Stack(
+        alignment: Alignment.center,
+
         children: [
           Buildbackground(),
-          Center(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('logged in', style: TextStyle(fontSize: 24)),
-                const SizedBox(height: 20),
-                Text(
-                  user?.email ?? 'No user logged in',
-                  style: TextStyle(fontSize: 18),
+                SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: Image.asset(
+                        "assets/images/settings.png",
+                        height: 32,
+                        width: 32,
+                      ),
+                    ),
+                  ],
                 ),
-                MaterialButton(
-                  onPressed: () async {
-                    await auth.signOut();
-                    if (!mounted) return;
-                    Navigator.pushNamedAndRemoveUntil(
-                      // ignore: use_build_context_synchronously
-                      context,
-                      Routes.login,
-                      (route) => false,
-                    );
-                  },
-                  color: AppColors.pink,
-                  textColor: AppColors.black,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text('Logout'),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(Routes.addChild);
+                      },
+                      child: const CircleAvatar(
+                        backgroundColor: AppColors.primaryYellow,
+                        radius: 15,
+                        child: Icon(Icons.add, color: Colors.white),
+                      ),
+                    ),
+                    Text(
+                      "الأطفال المشاركين",
+                      style: TextStyle(
+                        fontFamily: 'childFont',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        color: AppColors.primaryYellow,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

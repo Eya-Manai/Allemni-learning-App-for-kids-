@@ -227,19 +227,28 @@ class _SignupState extends State<Signup> {
               color: AppColors.lightYellow,
             ),
             child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: _selectedGender,
-                hint: const Text('اختر الجنس'),
-                icon: const Icon(Icons.arrow_drop_down),
-                isExpanded: true,
-                items: _genders.map((gender) {
-                  return DropdownMenuItem(value: gender, child: Text(gender));
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedGender = value;
-                  });
-                },
+              child: Directionality(
+                textDirection: TextDirection.rtl,
+                child: DropdownButton<String>(
+                  value: _selectedGender,
+                  hint: const Text('اختر الجنس'),
+                  icon: const Icon(Icons.arrow_drop_down),
+                  isExpanded: true,
+                  items: _genders.map((gender) {
+                    return DropdownMenuItem(
+                      value: gender,
+                      child: Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: Text(gender),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedGender = value;
+                    });
+                  },
+                ),
               ),
             ),
           ),

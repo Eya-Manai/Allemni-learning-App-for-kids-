@@ -58,7 +58,7 @@ class NavbarState extends State<Navbar> {
       final lastname = data["family_name"] as String? ?? "";
       final genderValue = (data["gender"] as String? ?? "ذكر").trim();
       debugPrint(
-        'name familt name: $firstname $lastname, gender: $genderValue',
+        'name family name: $firstname $lastname, gender: $genderValue',
       );
 
       setState(() {
