@@ -19,7 +19,7 @@ class YellowButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primaryYellow,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         minimumSize: Size(MediaQuery.of(context).size.width * 0.5, 50),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       ),

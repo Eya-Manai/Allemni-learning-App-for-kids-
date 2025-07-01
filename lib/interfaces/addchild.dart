@@ -1,10 +1,12 @@
 import 'package:allemni/constants/colors.dart';
+import 'package:allemni/constants/toast.dart';
 import 'package:allemni/widgets/draw_background.dart';
 import 'package:allemni/widgets/draw_input_field.dart';
 import 'package:allemni/widgets/draw_label.dart';
 import 'package:allemni/widgets/draw_title.dart';
 import 'package:allemni/widgets/draw_yellow_button.dart';
 import 'package:allemni/widgets/navbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class AddChildPage extends StatefulWidget {
@@ -15,8 +17,10 @@ class AddChildPage extends StatefulWidget {
 }
 
 class _AddChildPageState extends State<AddChildPage> {
-  final childController = TextEditingController();
+  final childnameController = TextEditingController();
   final childfamilyNameController = TextEditingController();
+  final schoolnameController = TextEditingController();
+
   String selectedclass = 'السنة الأولى';
   final List<String> classOptions = [
     'السنة الأولى',
@@ -27,6 +31,36 @@ class _AddChildPageState extends State<AddChildPage> {
     'السنة السادسة',
   ];
   String? selectedAvatar;
+
+  void _addchildinfo() async {
+    if (childnameController.text.isEmpty ||
+        childfamilyNameController.text.isEmpty ||
+        schoolnameController.text.isEmpty ||
+        selectedAvatar == null) {
+      showToast(message: 'يرجى ملء جميع الحقول');
+      return;
+    }
+    try {
+      await FirebaseFirestore.instance.collection('Children').add({
+        'first_name': childnameController.text.trim(),
+        'last_name': childfamilyNameController.text.trim(),
+        'school': schoolnameController.text.trim(),
+        'class': selectedclass,
+        'avatar': selectedAvatar,
+        'created_at': Timestamp.now(),
+      });
+
+      showToast(message: "تم اضافة التلميذ بنجاح");
+
+      childnameController.clear();
+      childfamilyNameController.clear();
+      selectedclass = '';
+      selectedAvatar = null;
+    } catch (e) {
+      debugPrint(" حدث خطأ أثناء الإضافة $e");
+      showToast(message: "حدث خطأ أثناء الإضافة");
+    }
+  }
 
   Widget _buildInputSection() {
     return Column(
@@ -82,7 +116,7 @@ class _AddChildPageState extends State<AddChildPage> {
           child: BuildLabel('اسم التلميذ '),
         ),
         const SizedBox(height: 10),
-        BuildInputField(obscure: false, controller: childController),
+        BuildInputField(obscure: false, controller: childnameController),
         const SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.only(right: 35),
@@ -98,7 +132,7 @@ class _AddChildPageState extends State<AddChildPage> {
           child: BuildLabel('المدرسة الابتدائية'),
         ),
         const SizedBox(height: 10),
-        BuildInputField(obscure: false, controller: childfamilyNameController),
+        BuildInputField(obscure: false, controller: schoolnameController),
         const SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.only(right: 35),
@@ -183,7 +217,7 @@ class _AddChildPageState extends State<AddChildPage> {
                   const SizedBox(height: 20),
                   _buildInputSection(),
                   const SizedBox(height: 20),
-                  YellowButton(text: "اضافة"),
+                  YellowButton(text: "اضافة", onPressed: _addchildinfo),
                 ],
               ),
             ),
