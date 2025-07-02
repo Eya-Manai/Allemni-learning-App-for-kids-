@@ -1,5 +1,6 @@
 import 'package:allemni/constants/colors.dart';
 import 'package:allemni/constants/toast.dart';
+import 'package:allemni/routes/routes.dart';
 import 'package:allemni/widgets/draw_background.dart';
 import 'package:allemni/widgets/draw_input_field.dart';
 import 'package:allemni/widgets/draw_label.dart';
@@ -20,7 +21,7 @@ class _AddChildPageState extends State<AddChildPage> {
   final childnameController = TextEditingController();
   final childfamilyNameController = TextEditingController();
   final schoolnameController = TextEditingController();
-
+  bool isadded = false;
   String selectedclass = 'السنة الأولى';
   final List<String> classOptions = [
     'السنة الأولى',
@@ -49,6 +50,9 @@ class _AddChildPageState extends State<AddChildPage> {
         'avatar': selectedAvatar,
         'created_at': Timestamp.now(),
       });
+      setState(() {
+        isadded = true;
+      });
 
       showToast(message: "تم اضافة التلميذ بنجاح");
 
@@ -56,6 +60,13 @@ class _AddChildPageState extends State<AddChildPage> {
       childfamilyNameController.clear();
       selectedclass = '';
       selectedAvatar = null;
+      setState(() {
+        isadded = false;
+      });
+      if (isadded == false) {
+        if (!mounted) return;
+        Navigator.pushNamed(context, Routes.parentHome);
+      }
     } catch (e) {
       debugPrint(" حدث خطأ أثناء الإضافة $e");
       showToast(message: "حدث خطأ أثناء الإضافة");
