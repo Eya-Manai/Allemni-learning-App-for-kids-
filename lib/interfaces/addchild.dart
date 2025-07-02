@@ -8,7 +8,9 @@ import 'package:allemni/widgets/draw_title.dart';
 import 'package:allemni/widgets/draw_yellow_button.dart';
 import 'package:allemni/widgets/navbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' as intl;
 
 class AddChildPage extends StatefulWidget {
   const AddChildPage({super.key});
@@ -34,6 +36,9 @@ class _AddChildPageState extends State<AddChildPage> {
   String? selectedAvatar;
 
   void _addchildinfo() async {
+    final formattedDate = intl.DateFormat(
+      'yyyy-MM-dd -kk:mm',
+    ).format(DateTime.now());
     if (childnameController.text.isEmpty ||
         childfamilyNameController.text.isEmpty ||
         schoolnameController.text.isEmpty ||
@@ -48,7 +53,8 @@ class _AddChildPageState extends State<AddChildPage> {
         'school': schoolnameController.text.trim(),
         'class': selectedclass,
         'avatar': selectedAvatar,
-        'created_at': Timestamp.now(),
+        'created_at': formattedDate,
+        'parent_id': FirebaseAuth.instance.currentUser!.uid,
       });
       setState(() {
         isadded = true;
