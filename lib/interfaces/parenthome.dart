@@ -21,7 +21,6 @@ class _ParenthomeState extends State<Parenthome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const Navbar(),
-      backgroundColor: Colors.transparent,
       body: Stack(
         alignment: Alignment.center,
 
