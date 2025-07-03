@@ -53,7 +53,8 @@ class _AddChildPageState extends State<AddChildPage> {
         'school': schoolnameController.text.trim(),
         'class': selectedclass,
         'avatar': selectedAvatar,
-        'created_at': formattedDate,
+        'created_at': Timestamp.fromDate(DateTime.now()),
+        'created_at_display': formattedDate,
         'parent_id': FirebaseAuth.instance.currentUser!.uid,
       });
       setState(() {
