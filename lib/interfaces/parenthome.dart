@@ -64,7 +64,12 @@ class _ParenthomeState extends State<Parenthome> {
                             vertical: 2,
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            Routes.characterSelection,
+                          );
+                        },
                         child: const Text(
                           "فتح الحساب",
                           style: TextStyle(
