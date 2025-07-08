@@ -49,18 +49,18 @@ class _CharacterSelection extends State<Characterselection> {
     _initPreferences();
   }
 
-  int stelectedIndex = 0;
+  int selectedIndex = 0;
 
   void _next() {
     setState(() {
-      stelectedIndex = (stelectedIndex + 1) % characters.length;
+      selectedIndex = (selectedIndex + 1) % characters.length;
     });
   }
 
   void _previous() {
     setState(() {
-      stelectedIndex =
-          (stelectedIndex - 1 + characters.length) % characters.length;
+      selectedIndex =
+          (selectedIndex - 1 + characters.length) % characters.length;
     });
   }
 
@@ -74,19 +74,33 @@ class _CharacterSelection extends State<Characterselection> {
     }
   }
 
-  void _confirmCharacter() async {
-    final prefrenes = await SharedPreferences.getInstance();
-    await prefrenes.setString(
-      'selectedCharacter',
-      characters[stelectedIndex]['name']!,
+  Future<void> _confirmCharacter() async {
+    final preferences = await SharedPreferences.getInstance();
+
+    final childId = preferences.getString("selectedChildId");
+
+    if (childId == null) {
+      debugPrint(" No selectedChildId found in SharedPreferences");
+      return;
+    }
+
+    await preferences.setString(
+      "character_$childId",
+      characters[selectedIndex]['name'],
     );
+
+    debugPrint(
+      "Character '${characters[selectedIndex]['name']}' saved for child ID $childId",
+    );
+
     if (!mounted) return;
-    Navigator.pushNamed(context, Routes.chooseclass);
+
+    Navigator.pushReplacementNamed(context, Routes.chooseclass);
   }
 
   @override
   Widget build(BuildContext context) {
-    final charachter = characters[stelectedIndex];
+    final charachter = characters[selectedIndex];
     return Scaffold(
       backgroundColor: const Color(0xFF1E1E1E),
       body: Center(

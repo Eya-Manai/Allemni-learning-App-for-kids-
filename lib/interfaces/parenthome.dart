@@ -73,11 +73,22 @@ class _ParenthomeState extends State<Parenthome> {
                             "selectedChildId",
                             childId,
                           );
-                          if (!mounted) return;
-                          Navigator.pushNamed(
-                            context,
-                            Routes.characterSelection,
+
+                          final characterkey = "character_$childId";
+                          final alreadySelected = preferences.getString(
+                            characterkey,
                           );
+
+                          if (!mounted) return;
+
+                          if (alreadySelected == null) {
+                            Navigator.pushNamed(
+                              context,
+                              Routes.characterSelection,
+                            );
+                          } else {
+                            Navigator.pushNamed(context, Routes.chooseclass);
+                          }
                         },
                         child: const Text(
                           "فتح الحساب",

@@ -56,7 +56,7 @@ class _ChooseClassState extends State<ChooseClass> {
       displayedText = classitem["name"];
     });
     if (!mounted) return;
-    Navigator.pushNamed(context, Routes.chooseclass);
+    Navigator.pushNamed(context, Routes.parentHome);
   }
 
   @override
