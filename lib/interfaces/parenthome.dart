@@ -6,6 +6,7 @@ import 'package:allemni/widgets/navbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Parenthome extends StatefulWidget {
   const Parenthome({super.key});
@@ -18,6 +19,7 @@ class _ParenthomeState extends State<Parenthome> {
   final FirebaseAuthServices auth = FirebaseAuthServices();
   final user = FirebaseAuth.instance.currentUser;
   Widget _buildChildCard({
+    required String childId,
     required String firstName,
     required String lastName,
     required String avatarPath,
@@ -64,7 +66,14 @@ class _ParenthomeState extends State<Parenthome> {
                             vertical: 2,
                           ),
                         ),
-                        onPressed: () {
+                        onPressed: () async {
+                          final preferences =
+                              await SharedPreferences.getInstance();
+                          await preferences.setString(
+                            "selectedChildId",
+                            childId,
+                          );
+                          if (!mounted) return;
                           Navigator.pushNamed(
                             context,
                             Routes.characterSelection,
@@ -238,6 +247,7 @@ class _ParenthomeState extends State<Parenthome> {
                           final data =
                               childDocs[index].data() as Map<String, dynamic>;
                           return _buildChildCard(
+                            childId: childDocs[index].id,
                             firstName: data['first_name'],
                             lastName: data['last_name'],
                             avatarPath: data['avatar'],

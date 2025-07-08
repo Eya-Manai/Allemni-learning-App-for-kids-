@@ -29,7 +29,10 @@ class _LoginInterfaceState extends State<LoginInterface> {
     final password = _passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      showToast(message: "الرجاء ادخال البريد الالكتروني و كلمة المرور");
+      showToast(
+        message: "الرجاء ادخال البريد الالكتروني و كلمة المرور",
+        color: AppColors.orange,
+      );
       return;
     }
     setState(() {
@@ -76,7 +79,7 @@ class _LoginInterfaceState extends State<LoginInterface> {
           errorMsg = 'حدث خطأ: ${e.code}';
       }
 
-      showToast(message: errorMsg);
+      showToast(message: errorMsg, color: AppColors.orange);
     }
   }
 
@@ -107,12 +110,18 @@ class _LoginInterfaceState extends State<LoginInterface> {
       setState(() {
         _isLoggingIn = false;
       });
-      showToast(message: 'فشل تسجيل الدخول باستخدام جوجل: ${e.code}');
+      showToast(
+        message: 'فشل تسجيل الدخول باستخدام جوجل: ${e.code}',
+        color: AppColors.orange,
+      );
     } catch (e) {
       setState(() {
         _isLoggingIn = false;
       });
-      showToast(message: "حدث خطأ أثناء تسجيل الدخول باستخدام جوجل.");
+      showToast(
+        message: "حدث خطأ أثناء تسجيل الدخول باستخدام جوجل.",
+        color: AppColors.orange,
+      );
     }
   }
 

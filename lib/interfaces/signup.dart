@@ -46,21 +46,24 @@ class _SignupState extends State<Signup> {
     String phone = _phoneNumberController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      showToast(message: "يرجى ملء جميع الحقول");
+      showToast(message: "يرجى ملء جميع الحقول", color: AppColors.orange);
       return;
     }
 
     if (password.length < 8) {
-      showToast(message: "كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل");
+      showToast(
+        message: "كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل",
+        color: AppColors.orange,
+      );
       return;
     }
     if (phone.isEmpty) {
-      showToast(message: "يرجى إدخال رقم الهاتف");
+      showToast(message: "يرجى إدخال رقم الهاتف", color: AppColors.orange);
       return;
     }
 
     if (!_isValidPoneNumber(phone)) {
-      showToast(message: ".رقم الهاتف غير صالح");
+      showToast(message: ".رقم الهاتف غير صالح", color: AppColors.orange);
       return;
     }
     setState(() {
@@ -68,7 +71,7 @@ class _SignupState extends State<Signup> {
     });
 
     if (_selectedGender == null) {
-      showToast(message: "رجى اختيار الجنس");
+      showToast(message: "رجى اختيار الجنس", color: AppColors.orange);
       return;
     }
 
@@ -96,7 +99,10 @@ class _SignupState extends State<Signup> {
         Navigator.pushNamed(context, Routes.parentHome);
       } else {
         //ignore: avoid_print
-        showToast(message: "حدث خطأ أثناء إنشاء الحساب.");
+        showToast(
+          message: "حدث خطأ أثناء إنشاء الحساب.",
+          color: AppColors.orange,
+        );
       }
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -120,12 +126,15 @@ class _SignupState extends State<Signup> {
         default:
           errormessage = 'حدث خطأ: ${e.code}';
       }
-      showToast(message: errormessage);
+      showToast(message: errormessage, color: AppColors.orange);
     } catch (e) {
       setState(() {
         _isSigningUp = false;
       });
-      showToast(message: "حدث خطأ غير متوقع أثناء إنشاء الحساب.");
+      showToast(
+        message: "حدث خطأ غير متوقع أثناء إنشاء الحساب.",
+        color: AppColors.orange,
+      );
     }
   }
 
@@ -149,7 +158,10 @@ class _SignupState extends State<Signup> {
     } catch (e) {
       //ignore: avoid_print
       print("❌ Erreur Firestore: $e");
-      showToast(message: "فشل في حفظ معلومات المستخدم.");
+      showToast(
+        message: "فشل في حفظ معلومات المستخدم.",
+        color: AppColors.orange,
+      );
     }
   }
 

@@ -43,7 +43,7 @@ class _AddChildPageState extends State<AddChildPage> {
         childfamilyNameController.text.isEmpty ||
         schoolnameController.text.isEmpty ||
         selectedAvatar == null) {
-      showToast(message: 'يرجى ملء جميع الحقول');
+      showToast(message: 'يرجى ملء جميع الحقول', color: AppColors.orange);
       return;
     }
     try {
@@ -61,7 +61,7 @@ class _AddChildPageState extends State<AddChildPage> {
         isadded = true;
       });
 
-      showToast(message: "تم اضافة التلميذ بنجاح");
+      showToast(message: "تم اضافة التلميذ بنجاح", color: AppColors.green);
 
       childnameController.clear();
       childfamilyNameController.clear();
@@ -76,7 +76,7 @@ class _AddChildPageState extends State<AddChildPage> {
       }
     } catch (e) {
       debugPrint(" حدث خطأ أثناء الإضافة $e");
-      showToast(message: "حدث خطأ أثناء الإضافة");
+      showToast(message: "حدث خطأ أثناء الإضافة", color: AppColors.orange);
     }
   }
 
