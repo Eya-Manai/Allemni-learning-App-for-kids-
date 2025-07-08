@@ -1,3 +1,4 @@
+import 'package:allemni/widgets/childnavbar.dart';
 import 'package:flutter/material.dart';
 
 class ChooseClass extends StatefulWidget {
@@ -13,7 +14,7 @@ class _ChooseClassState extends State<ChooseClass> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Choose Class')),
+      appBar: ChildNavbar(),
       body: Center(
         child: Text(displayedText, style: const TextStyle(fontSize: 24)),
       ),
