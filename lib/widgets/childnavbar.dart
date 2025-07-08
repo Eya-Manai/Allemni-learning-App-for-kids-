@@ -1,8 +1,7 @@
 import 'package:allemni/constants/colors.dart';
 import 'package:allemni/routes/routes.dart';
+import 'package:allemni/services/child_service.dart';
 import 'package:allemni/services/firebase_auth_services.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ChildNavbar extends StatefulWidget implements PreferredSizeWidget {
@@ -18,6 +17,7 @@ class ChildNavbar extends StatefulWidget implements PreferredSizeWidget {
 class NavbarState extends State<ChildNavbar> {
   String? childName;
   String? childfalmilyName;
+  String? avatarPath;
   bool isLoading = true;
 
   @override
@@ -28,32 +28,14 @@ class NavbarState extends State<ChildNavbar> {
 
   Future<void> getChildInfo() async {
     try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        throw Exception("not signed in ");
+      final data = await ChildService.getChildData();
+      if (data == null) {
+        throw Exception("No child data");
       }
-
-      final collectionId = 'Children';
-      final docRef = FirebaseFirestore.instance
-          .collection(collectionId)
-          .doc(user.uid);
-      debugPrint('Fetching user doc from $collectionId/${user.uid}');
-
-      final doc = await docRef.get();
-
-      if (!doc.exists) {
-        throw Exception("Nod document");
-      }
-      final data = doc.data()!;
-      debugPrint('Fetched child data: $data');
-
-      final firstname = data["first_name"] as String? ?? "";
-      final lastname = data["family_name"] as String? ?? "";
-      debugPrint('child name and family name: $firstname $lastname');
-
       setState(() {
-        childName = firstname;
-        childfalmilyName = lastname;
+        childName = data["first_name"] as String? ?? "";
+        childfalmilyName = data["last_name"] as String? ?? "";
+        avatarPath = data["avatar"] as String? ?? "";
         isLoading = false;
       });
     } catch (e) {
@@ -62,6 +44,7 @@ class NavbarState extends State<ChildNavbar> {
       setState(() {
         childName = "";
         childfalmilyName = "";
+        avatarPath = "";
         isLoading = false;
       });
     }
@@ -91,7 +74,8 @@ class NavbarState extends State<ChildNavbar> {
                 ).pushNamedAndRemoveUntil(Routes.login, (route) => false);
               },
             ),
-            /*
+
+            const SizedBox(width: 8),
             isLoading
                 ? const SizedBox(
                     width: 32,
@@ -101,15 +85,12 @@ class NavbarState extends State<ChildNavbar> {
                       color: AppColors.pink,
                     ),
                   )
-                : Image.asset(
-                    parentGender == Gender.female
-                        ? 'assets/images/mom.png'
-                        : 'assets/images/dad.png',
-                    width: 32,
-                    height: 32,
+                : CircleAvatar(
+                    radius: 16,
+                    backgroundImage: AssetImage(avatarPath!),
                   ),
-                  */
             const SizedBox(width: 8),
+
             if (!isLoading)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
