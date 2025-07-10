@@ -74,23 +74,28 @@ class _ParenthomeState extends State<Parenthome> {
                             childId,
                           );
 
-                          final characterkey = "character_$childId";
+                          final characterKey = "character_$childId";
                           final alreadySelected = preferences.getString(
-                            characterkey,
+                            characterKey,
                           );
-                          final classkey = "class_$childId";
-                          final classalreadychosen = preferences.getString(
-                            classkey,
-                          );
+
+                          final classKey = "class_$childId";
 
                           if (!mounted) return;
 
                           if (alreadySelected == null) {
-                            Navigator.pushNamed(
+                            await Navigator.pushNamed(
                               context,
                               Routes.characterSelection,
                             );
-                            if (classalreadychosen == null) {
+
+                            final updatedPrefs =
+                                await SharedPreferences.getInstance();
+                            final updatedClass = updatedPrefs.getString(
+                              classKey,
+                            );
+
+                            if (updatedClass == null && mounted) {
                               Navigator.pushNamed(context, Routes.chooseclass);
                             }
                           } else {
