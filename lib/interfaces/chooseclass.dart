@@ -50,13 +50,17 @@ class _ChooseClassState extends State<ChooseClass> {
 
   Future<void> selectclass(Map<String, dynamic> classitem) async {
     final preferences = await SharedPreferences.getInstance();
-    await preferences.setInt("selectedClass", classitem["value"]);
+    final childId = preferences.getString("selectedChildId");
+    if (childId == null) {
+      throw Exception(" No child ID found in SharedPreferences");
+    }
+    await preferences.setInt("class_$childId", classitem["value"]);
 
     setState(() {
       displayedText = classitem["name"];
     });
     if (!mounted) return;
-    Navigator.pushNamed(context, Routes.parentHome);
+    Navigator.pushNamed(context, Routes.chooseSubject);
   }
 
   @override
@@ -93,7 +97,9 @@ class _ChooseClassState extends State<ChooseClass> {
                     itemBuilder: (context, index) {
                       final classitem = classes[index];
                       return GestureDetector(
-                        onTap: () => selectclass(classitem),
+                        onTap: () {
+                          selectclass(classitem);
+                        },
                         child: Card(
                           elevation: 3,
                           shape: RoundedRectangleBorder(

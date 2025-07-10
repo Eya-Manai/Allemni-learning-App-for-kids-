@@ -78,6 +78,10 @@ class _ParenthomeState extends State<Parenthome> {
                           final alreadySelected = preferences.getString(
                             characterkey,
                           );
+                          final classkey = "class_$childId";
+                          final classalreadychosen = preferences.getString(
+                            classkey,
+                          );
 
                           if (!mounted) return;
 
@@ -86,8 +90,11 @@ class _ParenthomeState extends State<Parenthome> {
                               context,
                               Routes.characterSelection,
                             );
+                            if (classalreadychosen == null) {
+                              Navigator.pushNamed(context, Routes.chooseclass);
+                            }
                           } else {
-                            Navigator.pushNamed(context, Routes.chooseclass);
+                            Navigator.pushNamed(context, Routes.chooseSubject);
                           }
                         },
                         child: const Text(

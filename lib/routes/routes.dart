@@ -1,6 +1,7 @@
 import 'package:allemni/interfaces/addchild.dart';
 import 'package:allemni/interfaces/characterselection.dart';
 import 'package:allemni/interfaces/chooseclass.dart';
+import 'package:allemni/interfaces/choosesubject.dart';
 import 'package:allemni/interfaces/forgotpassword.dart';
 import 'package:allemni/interfaces/login.dart';
 import 'package:allemni/interfaces/parenthome.dart';
@@ -16,6 +17,7 @@ class Routes {
   static const String addChild = '/addchild';
   static const String characterSelection = '/characterSelection';
   static const String chooseclass = '/chooseclass';
+  static const String chooseSubject = '/chooseSubject';
 
   static Map<String, WidgetBuilder> routes = {
     login: (context) => const LoginInterface(),
@@ -25,5 +27,6 @@ class Routes {
     addChild: (context) => const AddChildPage(),
     characterSelection: (context) => const Characterselection(),
     chooseclass: (context) => const ChooseClass(),
+    chooseSubject: (context) => const ChooseSubject(),
   };
 }
