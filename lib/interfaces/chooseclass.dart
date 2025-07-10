@@ -1,9 +1,9 @@
 import 'package:allemni/routes/routes.dart';
+import 'package:allemni/services/child_service.dart';
 import 'package:allemni/widgets/childnavbar.dart';
 import 'package:allemni/widgets/draw_background.dart';
 import 'package:allemni/widgets/draw_title.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ChooseClass extends StatefulWidget {
   const ChooseClass({super.key});
@@ -49,18 +49,16 @@ class _ChooseClassState extends State<ChooseClass> {
   ];
 
   Future<void> selectclass(Map<String, dynamic> classitem) async {
-    final preferences = await SharedPreferences.getInstance();
-    final childId = preferences.getString("selectedChildId");
-    if (childId == null) {
-      throw Exception(" No child ID found in SharedPreferences");
+    try {
+      await ChildService.updateClass(classitem);
+      setState(() {
+        displayedText = classitem["name"];
+      });
+      if (!mounted) return;
+      Navigator.pushNamed(context, Routes.chooseSubject);
+    } catch (e) {
+      throw Exception("Error updating class in firebase Firestore");
     }
-    await preferences.setInt("class_$childId", classitem["value"]);
-
-    setState(() {
-      displayedText = classitem["name"];
-    });
-    if (!mounted) return;
-    Navigator.pushNamed(context, Routes.chooseSubject);
   }
 
   @override

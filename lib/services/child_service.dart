@@ -53,4 +53,19 @@ class ChildService {
       throw Exception("Failed to Update character");
     }
   }
+
+  static Future<void> updateClass(Map<String, dynamic> classValue) async {
+    final childId = await getSelectedChildId();
+    if (childId == null) {
+      throw Exception("No child found for this class");
+    }
+    try {
+      await FirebaseFirestore.instance
+          .collection("Children")
+          .doc(childId)
+          .update({"ConfirmClassValue": classValue["value"]});
+    } catch (e) {
+      throw Exception("Failed to Update class in the Firestore $e");
+    }
+  }
 }
