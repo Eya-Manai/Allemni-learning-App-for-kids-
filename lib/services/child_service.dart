@@ -33,4 +33,24 @@ class ChildService {
       throw Exception("failed to fetch child data $e");
     }
   }
+
+  static Future<void> updateCharacter(Map<String, dynamic> character) async {
+    final childId = await getSelectedChildId();
+    if (childId == null) {
+      throw Exception("No child found");
+    }
+    try {
+      await FirebaseFirestore.instance
+          .collection("Children")
+          .doc(childId)
+          .update({
+            "character": {
+              "name": character["name"],
+              "avatar": character["avatar"],
+            },
+          });
+    } catch (e) {
+      throw Exception("Failed to Update character");
+    }
+  }
 }

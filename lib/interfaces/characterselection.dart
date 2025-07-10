@@ -1,5 +1,6 @@
 import 'package:allemni/constants/colors.dart';
 import 'package:allemni/routes/routes.dart';
+import 'package:allemni/services/child_service.dart';
 import 'package:allemni/widgets/draw_a_button.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -75,27 +76,19 @@ class _CharacterSelection extends State<Characterselection> {
   }
 
   Future<void> _confirmCharacter() async {
-    final preferences = await SharedPreferences.getInstance();
+    final selectedCharacter = characters[selectedIndex];
+    try {
+      await ChildService.updateCharacter(selectedCharacter);
+      debugPrint(
+        "Character '${selectedCharacter['name']}' saved to Firestore.",
+      );
 
-    final childId = preferences.getString("selectedChildId");
+      if (!mounted) return;
 
-    if (childId == null) {
-      debugPrint(" No selectedChildId found in SharedPreferences");
-      return;
+      Navigator.pushReplacementNamed(context, Routes.chooseclass);
+    } catch (e) {
+      throw Exception("Error saving the charater to firestore $e");
     }
-
-    await preferences.setString(
-      "character_$childId",
-      characters[selectedIndex]['name'],
-    );
-
-    debugPrint(
-      "Character '${characters[selectedIndex]['name']}' saved for child ID $childId",
-    );
-
-    if (!mounted) return;
-
-    Navigator.pushReplacementNamed(context, Routes.chooseclass);
   }
 
   @override
