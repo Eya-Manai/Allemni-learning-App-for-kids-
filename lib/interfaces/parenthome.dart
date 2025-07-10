@@ -67,38 +67,54 @@ class _ParenthomeState extends State<Parenthome> {
                           ),
                         ),
                         onPressed: () async {
-                          final preferences =
+                          final doc = await FirebaseFirestore.instance
+                              .collection("Children")
+                              .doc(childId)
+                              .get();
+                          final data = doc.data();
+                          if (data == null) {
+                            throw Exception("No data found");
+                          }
+
+                          final childCharacter = data["character"];
+                          final childclass = data["ConfirmClass"];
+                          final prefrences =
                               await SharedPreferences.getInstance();
-                          await preferences.setString(
+                          await prefrences.setString(
                             "selectedChildId",
                             childId,
                           );
+                          if (childCharacter == null) {
+                            if (!mounted) return;
 
-                          final characterKey = "character_$childId";
-                          final alreadySelected = preferences.getString(
-                            characterKey,
-                          );
-
-                          final classKey = "class_$childId";
-
-                          if (!mounted) return;
-
-                          if (alreadySelected == null) {
                             await Navigator.pushNamed(
                               context,
                               Routes.characterSelection,
                             );
-
-                            final updatedPrefs =
-                                await SharedPreferences.getInstance();
-                            final updatedClass = updatedPrefs.getString(
-                              classKey,
-                            );
-
-                            if (updatedClass == null && mounted) {
-                              Navigator.pushNamed(context, Routes.chooseclass);
+                            final updatedDoc = await FirebaseFirestore.instance
+                                .collection("Children")
+                                .doc(childId)
+                                .get();
+                            final updatedData = updatedDoc.data();
+                            final updatedClass = updatedData?["ConfirmClass"];
+                            if (updatedClass == null) {
+                              if (!mounted) return;
+                              await Navigator.pushNamed(
+                                context,
+                                Routes.chooseclass,
+                              );
+                            } else {
+                              if (!mounted) return;
+                              Navigator.pushNamed(
+                                context,
+                                Routes.chooseSubject,
+                              );
                             }
+                          } else if (childclass == null) {
+                            if (!mounted) return;
+                            Navigator.pushNamed(context, Routes.chooseclass);
                           } else {
+                            if (!mounted) return;
                             Navigator.pushNamed(context, Routes.chooseSubject);
                           }
                         },
