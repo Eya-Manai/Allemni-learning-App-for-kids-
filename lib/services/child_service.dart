@@ -64,9 +64,32 @@ class ChildService {
           .collection("Children")
           .doc(childId)
           .update({
-            "ConfirmClassValue": classitem["value"],
-            "name": classitem["name"],
-            "image": classitem["image"],
+            "ConfirmClass": {
+              "ClassValue": classitem["value"],
+              "name": classitem["name"],
+              "image": classitem["image"],
+            },
+          });
+    } catch (e) {
+      throw Exception("Failed to Update class in the Firestore $e");
+    }
+  }
+
+  static Future<void> updateSubject(Map<String, dynamic> subjectitem) async {
+    final childId = await getSelectedChildId();
+    if (childId == null) {
+      throw Exception("No child found for this subject");
+    }
+    try {
+      await FirebaseFirestore.instance
+          .collection("Children")
+          .doc(childId)
+          .update({
+            "subject": {
+              "SubjectValue": subjectitem["value"],
+              "name": subjectitem["name"],
+              "image": subjectitem["image"],
+            },
           });
     } catch (e) {
       throw Exception("Failed to Update class in the Firestore $e");

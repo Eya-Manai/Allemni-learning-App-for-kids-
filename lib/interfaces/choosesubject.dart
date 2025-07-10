@@ -1,9 +1,9 @@
 import 'package:allemni/routes/routes.dart';
+import 'package:allemni/services/child_service.dart';
 import 'package:allemni/widgets/childnavbar.dart';
 import 'package:allemni/widgets/draw_background.dart';
 import 'package:allemni/widgets/draw_title.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ChooseSubject extends StatefulWidget {
   const ChooseSubject({super.key});
@@ -60,17 +60,16 @@ class _ChooseSubjectState extends State<ChooseSubject> {
   String displayText = "اختر المادة";
 
   Future<void> selectSubjct(Map<String, dynamic> subjectItem) async {
-    final prefrences = await SharedPreferences.getInstance();
-    final childId = prefrences.getString("selectedChildId");
-    if (childId == null) {
-      throw Exception("No child found ");
+    try {
+      await ChildService.updateSubject(subjectItem);
+      setState(() {
+        displayText = subjectItem["name"];
+        if (!mounted) return;
+        Navigator.pushNamed(context, Routes.parentHome);
+      });
+    } catch (e) {
+      throw Exception("Error saving the subject ");
     }
-    await prefrences.setString("subject_$childId", subjectItem["value"]);
-    setState(() {
-      displayText = subjectItem["name"];
-    });
-    if (!mounted) return;
-    Navigator.pushNamed(context, Routes.parentHome);
   }
 
   @override
