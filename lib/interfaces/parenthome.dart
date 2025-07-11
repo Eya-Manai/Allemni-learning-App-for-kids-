@@ -1,5 +1,7 @@
 import 'package:allemni/constants/colors.dart';
+import 'package:allemni/constants/toast.dart';
 import 'package:allemni/routes/routes.dart';
+import 'package:allemni/services/child_service.dart';
 import 'package:allemni/services/firebase_auth_services.dart';
 import 'package:allemni/widgets/draw_background.dart';
 import 'package:allemni/widgets/navbar.dart';
@@ -183,7 +185,20 @@ class _ParenthomeState extends State<Parenthome> {
             bottom: 10,
             left: 5,
             child: IconButton(
-              onPressed: () {},
+              onPressed: () async {
+                try {
+                  await ChildService.deleteChild(childId);
+                  showToast(
+                    message: 'تم حذف الطفل بنجاح',
+                    color: AppColors.green,
+                  );
+                } catch (e) {
+                  showToast(
+                    message: 'فشل في حذف الطفل: $e',
+                    color: AppColors.orange,
+                  );
+                }
+              },
               icon: Icon(
                 Icons.delete_outline_outlined,
                 size: 24,

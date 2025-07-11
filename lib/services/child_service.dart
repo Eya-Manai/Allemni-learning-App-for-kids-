@@ -95,4 +95,12 @@ class ChildService {
       throw Exception("Failed to Update class in the Firestore $e");
     }
   }
+
+  static Future<void> deleteChild(String id) async {
+    try {
+      await FirebaseFirestore.instance.collection("Children").doc(id).delete();
+    } catch (e) {
+      throw Exception("No child with this id to delete");
+    }
+  }
 }
