@@ -1,4 +1,5 @@
 import 'package:allemni/constants/colors.dart';
+import 'package:allemni/services/module_service.dart';
 import 'package:allemni/widgets/childnavbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,37 @@ class ChooseModule extends StatefulWidget {
 }
 
 class ChooseModuleState extends State<ChooseModule> {
+  final List<Map<String, dynamic>> scienceModules = [
+    {
+      "name": "الهواء والتنفس ",
+      "image": "assets/images/breath.png",
+      "value": "module1",
+      "score": 0,
+      "progress": 0.0,
+    },
+    {
+      "name": "جهاز دوران الدم ",
+      "image": "assets/images/science.png",
+      "value": "module2",
+      "score": 0,
+      "progress": 0.0,
+    },
+
+    {
+      "name": "التغذية عند الانسان ",
+      "image": "assets/images/food.png",
+      "value": "module3",
+      "score": 0,
+      "progress": 0.0,
+    },
+    {
+      "name": "الوسط البيئي ",
+      "image": "assets/images/land.png",
+      "value": "module4",
+      "score": 0,
+      "progress": 0.0,
+    },
+  ];
   String childId = "";
   String subjectId = "";
   String subjectName = "";
@@ -46,12 +78,14 @@ class ChooseModuleState extends State<ChooseModule> {
         body: Center(child: CircularProgressIndicator()),
       );
     }
+
     final modulerefs = FirebaseFirestore.instance
         .collection("Children")
         .doc(childId)
         .collection("Subjects")
         .doc(subjectId)
         .collection("Modules");
+
     return Scaffold(
       appBar: ChildNavbar(),
       body: StreamBuilder<QuerySnapshot>(
@@ -60,7 +94,22 @@ class ChooseModuleState extends State<ChooseModule> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           }
+
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            FirebaseFirestore.instance
+                .collection("Children")
+                .doc(childId)
+                .collection("Subjects")
+                .doc(subjectId)
+                .collection("Modules")
+                .get()
+                .then((snapshot) {
+                  if (snapshot.docs.isEmpty) {
+                    if (subjectId == "science") {
+                      uploadSciencesModules();
+                    }
+                  }
+                });
             return Center(
               child: Text(
                 "لا توجد محاور بعد",
@@ -72,6 +121,7 @@ class ChooseModuleState extends State<ChooseModule> {
               ),
             );
           }
+
           final modules = snapshot.data!.docs;
           return GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -115,5 +165,13 @@ class ChooseModuleState extends State<ChooseModule> {
         },
       ),
     );
+  }
+
+  Future<void> uploadSciencesModules() async {
+    try {
+      await ModuleService.uploadModules("science", scienceModules);
+    } catch (e) {
+      throw Exception("Failed to upload science modules: $e");
+    }
   }
 }
