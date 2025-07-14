@@ -1,3 +1,5 @@
+import 'package:allemni/constants/colors.dart';
+import 'package:allemni/constants/toast.dart';
 import 'package:allemni/routes/routes.dart';
 import 'package:allemni/services/child_service.dart';
 import 'package:allemni/widgets/childnavbar.dart';
@@ -68,7 +70,8 @@ class _ChooseSubjectState extends State<ChooseSubject> {
         Navigator.pushNamed(context, Routes.parentHome);
       });
     } catch (e) {
-      throw Exception("Error saving the subject ");
+      showToast(message: "حدث خطأ أثناء حفظ المادة", color: AppColors.orange);
+      throw Exception("Error saving the subject $e");
     }
   }
 

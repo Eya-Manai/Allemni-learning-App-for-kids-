@@ -81,15 +81,18 @@ class ChildService {
       throw Exception("No child found for this subject");
     }
     try {
+      final subjectId = subjectitem["value"];
       await FirebaseFirestore.instance
           .collection("Children")
           .doc(childId)
-          .update({
-            "subject": {
-              "SubjectValue": subjectitem["value"],
-              "name": subjectitem["name"],
-              "image": subjectitem["image"],
-            },
+          .collection("Subjects")
+          .doc(subjectId)
+          .set({
+            "name": subjectitem["name"],
+            "image": subjectitem["image"],
+            "SubjectValue": subjectitem["value"],
+            "score": 0,
+            "createdAt": FieldValue.serverTimestamp(),
           });
     } catch (e) {
       throw Exception("Failed to Update class in the Firestore $e");
