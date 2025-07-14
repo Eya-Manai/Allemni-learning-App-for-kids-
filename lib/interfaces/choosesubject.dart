@@ -67,7 +67,14 @@ class _ChooseSubjectState extends State<ChooseSubject> {
       setState(() {
         displayText = subjectItem["name"];
         if (!mounted) return;
-        Navigator.pushNamed(context, Routes.parentHome);
+        Navigator.pushNamed(
+          context,
+          Routes.chooseModule,
+          arguments: {
+            "subjectId": subjectItem["value"],
+            "subjectName": subjectItem["name"],
+          },
+        );
       });
     } catch (e) {
       showToast(message: "حدث خطأ أثناء حفظ المادة", color: AppColors.orange);
