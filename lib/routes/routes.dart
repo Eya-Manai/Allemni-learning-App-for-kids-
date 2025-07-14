@@ -1,8 +1,8 @@
 import 'package:allemni/interfaces/addchild.dart';
 import 'package:allemni/interfaces/characterselection.dart';
-import 'package:allemni/interfaces/chooseModule.dart';
-import 'package:allemni/interfaces/chooseclass.dart';
-import 'package:allemni/interfaces/choosesubject.dart';
+import 'package:allemni/interfaces/choose_module.dart';
+import 'package:allemni/interfaces/choose_class.dart';
+import 'package:allemni/interfaces/choose_subject.dart';
 import 'package:allemni/interfaces/forgotpassword.dart';
 import 'package:allemni/interfaces/login.dart';
 import 'package:allemni/interfaces/parenthome.dart';
