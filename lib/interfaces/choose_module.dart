@@ -1,6 +1,8 @@
 import 'package:allemni/constants/colors.dart';
 import 'package:allemni/services/module_service.dart';
 import 'package:allemni/widgets/childnavbar.dart';
+import 'package:allemni/widgets/draw_background.dart';
+import 'package:allemni/widgets/draw_title.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,6 +49,7 @@ class ChooseModuleState extends State<ChooseModule> {
   String childId = "";
   String subjectId = "";
   String subjectName = "";
+  String displayText = "اختر المحور";
 
   Future<void> loadChildId() async {
     try {
@@ -88,81 +91,111 @@ class ChooseModuleState extends State<ChooseModule> {
 
     return Scaffold(
       appBar: ChildNavbar(),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: modulerefs.snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            FirebaseFirestore.instance
-                .collection("Children")
-                .doc(childId)
-                .collection("Subjects")
-                .doc(subjectId)
-                .collection("Modules")
-                .get()
-                .then((snapshot) {
-                  if (snapshot.docs.isEmpty) {
-                    if (subjectId == "science") {
-                      uploadSciencesModules();
+      body: Stack(
+        children: [
+          Buildbackground(),
+          Directionality(
+            textDirection: TextDirection.rtl,
+            child: Column(
+              children: [
+                const SizedBox(height: 24),
+                Padding(
+                  padding: EdgeInsetsGeometry.only(top: 20, right: 16),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: BuildTitle(displayText),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                StreamBuilder<QuerySnapshot>(
+                  stream: modulerefs.snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
                     }
-                  }
-                });
-            return Center(
-              child: Text(
-                "لا توجد محاور بعد",
-                style: TextStyle(
-                  fontFamily: 'childFont',
-                  fontSize: 20,
-                  color: AppColors.black,
-                ),
-              ),
-            );
-          }
 
-          final modules = snapshot.data!.docs;
-          return GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 16,
-              crossAxisSpacing: 16,
-              childAspectRatio: 0.9,
-            ),
-            itemCount: modules.length,
-            itemBuilder: (context, index) {
-              final module = modules[index].data() as Map<String, dynamic>;
-              final title = module['name'] ?? "";
-              final image = module['image'] ?? "";
-              return Card(
-                elevation: 3,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(image, height: 90),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
-                        title,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'childFont',
-                          fontSize: 16,
-                          color: AppColors.black,
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      FirebaseFirestore.instance
+                          .collection("Children")
+                          .doc(childId)
+                          .collection("Subjects")
+                          .doc(subjectId)
+                          .collection("Modules")
+                          .get()
+                          .then((snapshot) {
+                            if (snapshot.docs.isEmpty) {
+                              if (subjectId == "science") {
+                                uploadSciencesModules();
+                              }
+                            }
+                          });
+                      return Center(
+                        child: Text(
+                          "لا توجد محاور بعد",
+                          style: TextStyle(
+                            fontFamily: 'childFont',
+                            fontSize: 20,
+                            color: AppColors.black,
+                          ),
+                        ),
+                      );
+                    }
+
+                    final modules = snapshot.data!.docs;
+                    return Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 16,
+                                crossAxisSpacing: 16,
+                                childAspectRatio: 0.9,
+                              ),
+                          itemCount: modules.length,
+                          itemBuilder: (context, index) {
+                            final module =
+                                modules[index].data() as Map<String, dynamic>;
+                            final title = module['name'] ?? "";
+                            final image = module['image'] ?? "";
+                            return Card(
+                              elevation: 3,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(image, height: 90),
+                                  const SizedBox(height: 12),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
+                                    child: Text(
+                                      title,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'childFont',
+                                        fontSize: 16,
+                                        color: AppColors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
                       ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
-              );
-            },
-          );
-        },
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
