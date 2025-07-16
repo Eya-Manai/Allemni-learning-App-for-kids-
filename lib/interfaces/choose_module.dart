@@ -16,39 +16,60 @@ class ChooseModule extends StatefulWidget {
 }
 
 class ChooseModuleState extends State<ChooseModule> {
-  final List<Map<String, dynamic>> scienceModules = [
-    {
-      "name": "الهواء والتنفس ",
-      "image": "assets/images/breath.png",
-      "value": "module1",
-      "score": 0,
-      "progress": 0.0,
+  final Map<String, Map<String, List<Map<String, dynamic>>>>
+  defaultModulesBySubjectAndGrade = {
+    "science": {
+      "grade6": [
+        {
+          "name": "الهواء والتنفس ",
+          "image": "assets/images/breath.png",
+          "value": "module1",
+          "score": 0,
+          "progress": 0.0,
+        },
+        {
+          "name": "جهاز دوران الدم ",
+          "image": "assets/images/science.png",
+          "value": "module2",
+          "score": 0,
+          "progress": 0.0,
+        },
+        {
+          "name": "التغذية عند الانسان ",
+          "image": "assets/images/food.png",
+          "value": "module3",
+          "score": 0,
+          "progress": 0.0,
+        },
+        {
+          "name": "الوسط البيئي ",
+          "image": "assets/images/land.png",
+          "value": "module4",
+          "score": 0,
+          "progress": 0.0,
+        },
+      ],
+      "grade5": [
+        {
+          "name": "أجهزة الجسم ",
+          "image": "assets/images/body.png",
+          "value": "module1",
+          "score": 0,
+          "progress": 0.0,
+        },
+        {
+          "name": "الحواس الخمس ",
+          "image": "assets/images/senses.png",
+          "value": "module2",
+          "score": 0,
+          "progress": 0.0,
+        },
+      ],
     },
-    {
-      "name": "جهاز دوران الدم ",
-      "image": "assets/images/science.png",
-      "value": "module2",
-      "score": 0,
-      "progress": 0.0,
-    },
-
-    {
-      "name": "التغذية عند الانسان ",
-      "image": "assets/images/food.png",
-      "value": "module3",
-      "score": 0,
-      "progress": 0.0,
-    },
-    {
-      "name": "الوسط البيئي ",
-      "image": "assets/images/land.png",
-      "value": "module4",
-      "score": 0,
-      "progress": 0.0,
-    },
-  ];
+  };
   String childId = "";
   String subjectId = "";
+  String gradeId = "";
   String subjectName = "";
   String displayText = "اختر المحور";
 
@@ -72,6 +93,7 @@ class ChooseModuleState extends State<ChooseModule> {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     subjectId = args['subjectId'] ?? "";
     subjectName = args['subjectName'] ?? "";
+    gradeId = "grade${args['gradeId'] ?? ""}";
   }
 
   @override
@@ -125,9 +147,10 @@ class ChooseModuleState extends State<ChooseModule> {
                           .get()
                           .then((snapshot) {
                             if (snapshot.docs.isEmpty) {
-                              if (subjectId == "science") {
-                                uploadSciencesModules();
-                              }
+                              uploadDefaultModulesForSubjectsAndGrades(
+                                subjectId: subjectId,
+                                gradeId: gradeId,
+                              );
                             }
                           });
                       return Center(
@@ -215,11 +238,22 @@ class ChooseModuleState extends State<ChooseModule> {
     );
   }
 
-  Future<void> uploadSciencesModules() async {
-    try {
-      await ModuleService.uploadModules("science", scienceModules);
-    } catch (e) {
-      throw Exception("Failed to upload science modules: $e");
+  Future<void> uploadDefaultModulesForSubjectsAndGrades({
+    required String subjectId,
+    required String gradeId,
+  }) async {
+    final subjectData = defaultModulesBySubjectAndGrade[subjectId];
+    final modules = subjectData?[gradeId];
+    if (modules != null) {
+      try {
+        await ModuleService.uploadModules(subjectId, modules);
+      } catch (e) {
+        throw Exception("Error uploading default modules: $e");
+      }
+    } else {
+      throw Exception(
+        "No default modules found for subjectId: $subjectId and gradeId: $gradeId",
+      );
     }
   }
 }

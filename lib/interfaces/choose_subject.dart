@@ -119,6 +119,7 @@ class _ChooseSubjectState extends State<ChooseSubject> {
           arguments: {
             "subjectId": subjectItem["value"],
             "subjectName": subjectItem["name"],
+            "gradeId": selectedClass.toString(),
           },
         );
       });
