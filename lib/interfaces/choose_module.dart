@@ -171,6 +171,10 @@ class ChooseModuleState extends State<ChooseModule> {
                       child: Padding(
                         padding: const EdgeInsets.only(top: 20),
                         child: GridView.builder(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 16,
+                          ),
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
