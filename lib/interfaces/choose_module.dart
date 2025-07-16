@@ -1,4 +1,5 @@
 import 'package:allemni/constants/colors.dart';
+import 'package:allemni/routes/routes.dart';
 import 'package:allemni/services/module_service.dart';
 import 'package:allemni/widgets/childnavbar.dart';
 import 'package:allemni/widgets/draw_background.dart';
@@ -159,31 +160,45 @@ class ChooseModuleState extends State<ChooseModule> {
                                 modules[index].data() as Map<String, dynamic>;
                             final title = module['name'] ?? "";
                             final image = module['image'] ?? "";
-                            return Card(
-                              elevation: 3,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(image, height: 90),
-                                  const SizedBox(height: 12),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                    ),
-                                    child: Text(
-                                      title,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'childFont',
-                                        fontSize: 16,
-                                        color: AppColors.black,
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  Routes.coursesMap,
+                                  arguments: {
+                                    'moduleId': modules[index].id,
+                                    'moduleName': title,
+                                    'subjectId': subjectId,
+                                    'childId': childId,
+                                  },
+                                );
+                              },
+                              child: Card(
+                                elevation: 3,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(image, height: 90),
+                                    const SizedBox(height: 12),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                      ),
+                                      child: Text(
+                                        title,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily: 'childFont',
+                                          fontSize: 16,
+                                          color: AppColors.black,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             );
                           },
