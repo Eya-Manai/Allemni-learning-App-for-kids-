@@ -93,6 +93,7 @@ class ChooseModuleState extends State<ChooseModule> {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     subjectId = args['subjectId'] ?? "";
     subjectName = args['subjectName'] ?? "";
+
     gradeId = "grade${args['gradeId'] ?? ""}";
   }
 
