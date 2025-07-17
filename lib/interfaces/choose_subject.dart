@@ -71,6 +71,7 @@ class _ChooseSubjectState extends State<ChooseSubject> {
       },
     ],
   };
+
   int? selectedClass;
   bool isLoading = true;
   List<Map<String, dynamic>> availableSubjects = [];

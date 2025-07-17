@@ -5,7 +5,7 @@ class CourseServices {
     required String subjectId,
     required String moduleId,
     required String courseId,
-    required Map<String, dynamic> moduleData,
+    required Map<String, dynamic> coursesData,
   }) async {
     try {
       final courseRf = FirebaseFirestore.instance
@@ -14,7 +14,7 @@ class CourseServices {
           .collection("Modules")
           .doc(moduleId)
           .collection("Courses");
-      for (final course in moduleData['courses']) {
+      for (final course in coursesData['courses']) {
         //garantee to have a unique id for each course
         final courseId =
             course['id'] ??
@@ -27,8 +27,8 @@ class CourseServices {
   }
 
   static Future<List<Map<String, dynamic>>> fetchCourses({
-    String subjectId = "",
-    String moduleId = "",
+    required String subjectId,
+    required String moduleId,
   }) async {
     try {
       final snapshot = await FirebaseFirestore.instance
