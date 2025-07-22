@@ -20,6 +20,8 @@ class CourseServices {
             course['id'] ??
             FirebaseFirestore.instance.collection('tmp').doc().id;
         await courseRf.doc(courseId).set(course);
+        //ignore: avoid_print
+        print("✅ Uploaded course: ${course['name']}");
       }
     } catch (e) {
       throw Exception("Error uploading courses to Firebase: $e");

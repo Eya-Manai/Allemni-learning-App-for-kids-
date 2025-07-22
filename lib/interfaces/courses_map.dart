@@ -1,4 +1,3 @@
-import 'package:allemni/constants/colors.dart';
 import 'package:allemni/services/course_services.dart';
 import 'package:allemni/widgets/childnavbar.dart';
 import 'package:allemni/widgets/draw_background.dart';
@@ -33,6 +32,7 @@ class _CoursesMapState extends State<CoursesMap> {
         "progress": 0.0,
         "score": 0,
         "order": 1,
+        "subjectId": "science",
         "moduleId": "airandbreathing",
         "isFirst": false,
       },
@@ -43,6 +43,7 @@ class _CoursesMapState extends State<CoursesMap> {
         "progress": 0.0,
         "score": 0,
         "order": 2,
+        "subjectId": "science",
         "moduleId": "airandbreathing",
         "isFirst": false,
       },
@@ -53,6 +54,7 @@ class _CoursesMapState extends State<CoursesMap> {
         "progress": 0.0,
         "score": 0,
         "order": 3,
+        "subjectId": "science",
         "moduleId": "airandbreathing",
         "isFirst": false,
       },
@@ -63,11 +65,13 @@ class _CoursesMapState extends State<CoursesMap> {
         "progress": 0.0,
         "score": 0,
         "order": 4,
+        "subjectId": "science",
         "moduleId": "airandbreathing",
         'isFirst': false,
       },
     ],
   };
+
   String childId = "";
   String subjectId = "";
   String moduleId = "";
@@ -75,6 +79,7 @@ class _CoursesMapState extends State<CoursesMap> {
   String gradeId = "";
 
   late final String moduleKey;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -84,20 +89,27 @@ class _CoursesMapState extends State<CoursesMap> {
     subjectId = args['subjectId'] ?? "";
     moduleName = args['moduleName'] ?? "";
     moduleId = args['moduleId'] ?? "";
-    gradeId = args['gradeId'] ?? "";
+    gradeId = args['gradeId']?.replaceAll(RegExp(r'[^0-9]'), '') ?? "6";
+
     moduleKey = "$gradeId-$subjectId-$moduleId";
+    //ignore: avoid_print
+    print("🔑 moduleKey: $moduleKey");
   }
 
-  Future<List<Map<String, dynamic>>> uploadandSeedCourses() async {
-    final existingCorses = await CourseServices.fetchCourses(
+  Future<List<Map<String, dynamic>>> uploadAndSeedCourses() async {
+    final existingCourses = await CourseServices.fetchCourses(
       subjectId: subjectId,
       moduleId: moduleId,
     );
-    if (existingCorses.isNotEmpty) {
-      return existingCorses;
-    }
+    //ignore: avoid_print
+    print("📦 Found ${existingCourses.length} existing courses");
+
+    if (existingCourses.isNotEmpty) return existingCourses;
 
     final sampleCourses = sampleCourseMap[moduleKey] ?? [];
+    //ignore: avoid_print
+    print("📚 Sample courses found: ${sampleCourses.length}");
+
     if (sampleCourses.isNotEmpty) {
       await CourseServices.uploadModulestoFirebase(
         subjectId: subjectId,
@@ -105,12 +117,19 @@ class _CoursesMapState extends State<CoursesMap> {
         courseId: "",
         coursesData: {'courses': sampleCourses},
       );
+    } else {
+      //ignore: avoid_print
+      print("⚠️ No sample courses found for key: $moduleKey");
     }
 
-    return await CourseServices.fetchCourses(
+    final afterUpload = await CourseServices.fetchCourses(
       subjectId: subjectId,
       moduleId: moduleId,
     );
+    //ignore: avoid_print
+    print("📥 After upload: ${afterUpload.length} courses");
+
+    return afterUpload;
   }
 
   @override
@@ -120,11 +139,11 @@ class _CoursesMapState extends State<CoursesMap> {
       body: Stack(
         children: [
           Buildbackground(),
-          FutureBuilder<List<Map<String, dynamic>>>(
-            future: uploadandSeedCourses(),
+          /* FutureBuilder<List<Map<String, dynamic>>>(
+            future: uploadAndSeedCourses(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
               if (snapshot.hasError ||
                   !snapshot.hasData ||
@@ -135,25 +154,32 @@ class _CoursesMapState extends State<CoursesMap> {
                     style: TextStyle(fontSize: 18, color: AppColors.black),
                   ),
                 );
-              } else {
-                final courses = snapshot.data!;
-                return _buildMapView(courses);
               }
-            },
-          ),
+              */
+          // return
+          _buildMapView([]),
+          //},
+          // ),
         ],
       ),
     );
   }
 
-  Widget _buildMapView(List<Map<String, dynamic>> courses) {
+  /*  Widget _buildMapView(List<Map<String, dynamic>> courses) {
     List<Offset> coursePoints = [
-      Offset(100, 100),
+      Offset(80, 100),
       Offset(200, 200),
-      Offset(150, 300),
-      Offset(250, 400),
-      Offset(100, 500),
+      Offset(100, 300),
+      Offset(200, 400),
+      Offset(120, 520),
     ];
+    List<String> localIcons = [
+      "assets/icons/air.png",
+      "assets/icons/carbon.png",
+      "assets/icons/fire.png",
+      "assets/icons/lungs.png",
+    ];
+
     return Stack(
       children: [
         Positioned.fill(
@@ -168,11 +194,38 @@ class _CoursesMapState extends State<CoursesMap> {
               child: CircleAvatar(
                 radius: 30,
                 backgroundColor: AppColors.primaryYellow,
-                child: Image.asset(courses[i]['image'], fit: BoxFit.cover),
+                child: Image.asset(
+                  localIcons[i],
+                  fit: BoxFit.cover,
+                  width: 35,
+                  height: 35,
+                ),
               ),
             ),
           ),
       ],
+    );
+    */
+  Widget _buildMapView(List<Map<String, dynamic>> courses) {
+    final List<Offset> points = [
+      Offset(30, 100),
+      Offset(250, 200),
+      Offset(50, 300),
+      Offset(250, 400),
+      Offset(50, 520),
+      Offset(250, 600),
+    ];
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 50.0,
+        right: 50.0,
+        top: 16.0,
+        bottom: 16.0,
+      ),
+      child: CustomPaint(
+        size: Size.infinite,
+        painter: DrawCoursePath(points: points),
+      ),
     );
   }
 }
