@@ -49,22 +49,6 @@ class ChooseModuleState extends State<ChooseModule> {
           "progress": 0.0,
         },
       ],
-      "grade5": [
-        {
-          "name": "أجهزة الجسم ",
-          "image": "assets/images/body.png",
-          "value": "module1",
-          "score": 0,
-          "progress": 0.0,
-        },
-        {
-          "name": "الحواس الخمس ",
-          "image": "assets/images/senses.png",
-          "value": "module2",
-          "score": 0,
-          "progress": 0.0,
-        },
-      ],
     },
   };
   String childId = "";

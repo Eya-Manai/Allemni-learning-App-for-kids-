@@ -1,8 +1,10 @@
+import 'dart:ui' as ui;
 import 'package:allemni/services/course_services.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:allemni/widgets/childnavbar.dart';
 import 'package:allemni/widgets/draw_background.dart';
 import 'package:allemni/widgets/draw_course_road.dart';
-import 'package:flutter/material.dart';
 
 class CoursesMap extends StatefulWidget {
   const CoursesMap({super.key});
@@ -16,58 +18,33 @@ class _CoursesMapState extends State<CoursesMap> {
     "6-science-airandbreathing": [
       {
         "id": "6sc1",
-        "name": "خاصيات الهواء ",
-        "image": "assets/icons/air.png",
-        "progress": 0.0,
-        "score": 0,
+        "name": "خاصيات الهواء",
+        "image": "assets/images/air.png",
         "order": 0,
-        "subjectId": "science",
-        "moduleId": "airandbreathing",
-        "isFirst": true,
       },
       {
         "id": "6sc2",
-        "name": "مكونات الهواء ",
-        "image": "assets/icons/carbon.png",
-        "progress": 0.0,
-        "score": 0,
+        "name": "مكونات الهواء",
+        "image": "assets/images/carbon.png",
         "order": 1,
-        "subjectId": "science",
-        "moduleId": "airandbreathing",
-        "isFirst": false,
       },
       {
         "id": "6sc3",
-        "name": "الاحتراق في الهواء ",
-        "image": "assets/icons/fire.png",
-        "progress": 0.0,
-        "score": 0,
+        "name": "الاحتراق في الهواء",
+        "image": "assets/images/fire.png",
         "order": 2,
-        "subjectId": "science",
-        "moduleId": "airandbreathing",
-        "isFirst": false,
       },
       {
         "id": "6sc4",
         "name": "التبادل الغازي في الرئتين",
-        "image": "assets/icons/lungs.png",
-        "progress": 0.0,
-        "score": 0,
+        "image": "assets/images/lungs.png",
         "order": 3,
-        "subjectId": "science",
-        "moduleId": "airandbreathing",
-        "isFirst": false,
       },
       {
         "id": "6sc5",
-        "name": "العناصر المتدخلة والناتجة عن عملية الاحتراق في الهواء",
-        "image": "assets/icons/candle.png",
-        "progress": 0.0,
-        "score": 0,
+        "name": "العناصر الناتجة عن الاحتراق",
+        "image": "assets/images/candle.png",
         "order": 4,
-        "subjectId": "science",
-        "moduleId": "airandbreathing",
-        'isFirst': false,
       },
     ],
   };
@@ -75,61 +52,86 @@ class _CoursesMapState extends State<CoursesMap> {
   String childId = "";
   String subjectId = "";
   String moduleId = "";
-  String moduleName = "";
   String gradeId = "";
+  late String moduleKey;
 
-  late final String moduleKey;
+  bool _didInit = false;
+  late Future<void> _initialise;
+  List<Map<String, dynamic>> courses = [];
+  List<ui.Image> icons = [];
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    childId = args['childId'] ?? "";
-    subjectId = args['subjectId'] ?? "";
-    moduleName = args['moduleName'] ?? "";
-    moduleId = args['moduleId'] ?? "";
-    gradeId = args['gradeId']?.replaceAll(RegExp(r'[^0-9]'), '') ?? "6";
+    if (!_didInit) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      childId = args['childId'] as String? ?? "";
+      subjectId = args['subjectId'] as String? ?? "";
+      moduleId = args['moduleId'] as String? ?? "";
+      gradeId = (args['gradeId'] as String? ?? "").replaceAll(
+        RegExp(r'[^0-9]'),
+        "",
+      );
+      moduleKey = "$gradeId-$subjectId-$moduleId";
+      //ignore:avoid_print
+      print("Module Key: $moduleKey");
 
-    moduleKey = "$gradeId-$subjectId-$moduleId";
-    //ignore: avoid_print
-    print("🔑 moduleKey: $moduleKey");
+      _didInit = true;
+      _initialise = _initialiseCoursesAndIcons();
+    }
   }
 
-  Future<List<Map<String, dynamic>>> uploadAndSeedCourses() async {
-    final existingCourses = await CourseServices.fetchCourses(
+  Future<void> _initialiseCoursesAndIcons() async {
+    final defaultList = sampleCourseMap[moduleKey] ?? [];
+    await CourseServices.uploadDefaultCourses(
+      childId: childId,
       subjectId: subjectId,
       moduleId: moduleId,
+      defaultCourses: defaultList,
     );
-    //ignore: avoid_print
-    print("📦 Found ${existingCourses.length} existing courses");
 
-    if (existingCourses.isNotEmpty) return existingCourses;
-
-    final sampleCourses = sampleCourseMap[moduleKey] ?? [];
-    //ignore: avoid_print
-    print("📚 Sample courses found: ${sampleCourses.length}");
-
-    if (sampleCourses.isNotEmpty) {
-      await CourseServices.uploadModulestoFirebase(
+    List<Map<String, dynamic>> fetched = [];
+    int attempts = 0;
+    while (fetched.isEmpty && attempts < 5) {
+      await Future.delayed(Duration(milliseconds: 300));
+      fetched = await CourseServices.fetchCourses(
+        childId: childId,
         subjectId: subjectId,
         moduleId: moduleId,
-        courseId: "",
-        coursesData: {'courses': sampleCourses},
       );
-    } else {
-      //ignore: avoid_print
-      print("⚠️ No sample courses found for key: $moduleKey");
+
+      attempts++;
+    }
+    if (fetched.isEmpty) {
+      throw Exception("Courses not available after upload.");
+    }
+    courses = fetched;
+    //ignore:avoid_print
+    print("📘 Loaded courses count: ${courses.length}");
+
+    final images = <ui.Image>[];
+    for (var c in courses) {
+      try {
+        final path = c["image"] as String;
+
+        debugPrint(" Trying to load image asset: '$path'");
+        final bytes = await rootBundle.load(path);
+        final codec = await ui.instantiateImageCodec(
+          bytes.buffer.asUint8List(),
+        );
+        final frame = await codec.getNextFrame();
+        images.add(frame.image);
+        debugPrint("✅ Image loaded: $path");
+      } catch (e) {
+        debugPrint("❌ Failed to load image:\n$e");
+      }
     }
 
-    final afterUpload = await CourseServices.fetchCourses(
-      subjectId: subjectId,
-      moduleId: moduleId,
-    );
+    if (!mounted) return;
+    setState(() => icons = images);
     //ignore: avoid_print
-    print("📥 After upload: ${afterUpload.length} courses");
-
-    return afterUpload;
+    print("🖼️ Decoded icons count: ${images.length}");
   }
 
   @override
@@ -139,92 +141,46 @@ class _CoursesMapState extends State<CoursesMap> {
       body: Stack(
         children: [
           Buildbackground(),
-          /* FutureBuilder<List<Map<String, dynamic>>>(
-            future: uploadAndSeedCourses(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
+          FutureBuilder<void>(
+            future: _initialise,
+            builder: (ctx, snap) {
+              if (snap.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
-              if (snapshot.hasError ||
-                  !snapshot.hasData ||
-                  snapshot.data!.isEmpty) {
+              if (snap.hasError) {
                 return Center(
                   child: Text(
-                    "لا توجد دروس متاحة في هذا المحور",
-                    style: TextStyle(fontSize: 18, color: AppColors.black),
+                    " لا توجد دروس متوفرة حاليا",
+                    style: TextStyle(fontFamily: 'childFont', fontSize: 20),
                   ),
                 );
               }
-              */
-          // return
-          _buildMapView([]),
-          //},
-          // ),
+              return _buildMapView(courses, icons);
+            },
+          ),
         ],
       ),
     );
   }
 
-  /*  Widget _buildMapView(List<Map<String, dynamic>> courses) {
-    List<Offset> coursePoints = [
-      Offset(80, 100),
-      Offset(200, 200),
-      Offset(100, 300),
-      Offset(200, 400),
-      Offset(120, 520),
-    ];
-    List<String> localIcons = [
-      "assets/icons/air.png",
-      "assets/icons/carbon.png",
-      "assets/icons/fire.png",
-      "assets/icons/lungs.png",
-    ];
-
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: CustomPaint(painter: DrawCoursePath(points: coursePoints)),
-        ),
-        for (int i = 0; i < courses.length; i++)
-          Positioned(
-            left: coursePoints[i].dx,
-            top: coursePoints[i].dy,
-            child: GestureDetector(
-              onTap: () {},
-              child: CircleAvatar(
-                radius: 30,
-                backgroundColor: AppColors.primaryYellow,
-                child: Image.asset(
-                  localIcons[i],
-                  fit: BoxFit.cover,
-                  width: 35,
-                  height: 35,
-                ),
-              ),
-            ),
-          ),
-      ],
-    );
-    */
-  Widget _buildMapView(List<Map<String, dynamic>> courses) {
-    final List<Offset> points = [
+  Widget _buildMapView(
+    List<Map<String, dynamic>> courses,
+    List<ui.Image> icons,
+  ) {
+    // Example static points — adjust to your design
+    final points = <Offset>[
       Offset(30, 100),
       Offset(250, 200),
       Offset(50, 300),
       Offset(250, 400),
       Offset(50, 520),
-      Offset(250, 600),
     ];
+
     return Padding(
-      padding: const EdgeInsets.only(
-        left: 50.0,
-        right: 50.0,
-        top: 16.0,
-        bottom: 16.0,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 16.0),
       child: CustomPaint(
         size: Size.infinite,
-        painter: DrawCoursePath(points: points),
+        painter: DrawCoursePath(points: points, icons: icons),
       ),
     );
   }
