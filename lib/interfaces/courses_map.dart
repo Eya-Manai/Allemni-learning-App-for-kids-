@@ -1,5 +1,7 @@
+import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:allemni/services/course_services.dart';
+import 'package:allemni/widgets/course_games_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:allemni/widgets/childnavbar.dart';
@@ -163,11 +165,35 @@ class _CoursesMapState extends State<CoursesMap> {
     );
   }
 
+  void _handleTap(
+    Offset tapPos,
+    List<Map<String, dynamic>> courses,
+    List<Offset> points,
+    BuildContext context,
+  ) {
+    const double radius = 30;
+
+    for (int i = 0; i < points.length; i++) {
+      final circleCenter = points[i];
+      final dx = tapPos.dx - circleCenter.dx;
+      final dy = tapPos.dy - circleCenter.dy;
+      final distance = sqrt(dx * dx + dy * dy);
+
+      if (distance <= radius) {
+        final course = courses[i];
+        showDialog(
+          context: context,
+          builder: (_) => CourseGamesPopUp(title: course["name"]),
+        );
+        break;
+      }
+    }
+  }
+
   Widget _buildMapView(
     List<Map<String, dynamic>> courses,
     List<ui.Image> icons,
   ) {
-    // Example static points — adjust to your design
     final points = <Offset>[
       Offset(30, 100),
       Offset(250, 200),
@@ -178,9 +204,16 @@ class _CoursesMapState extends State<CoursesMap> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 16.0),
-      child: CustomPaint(
-        size: Size.infinite,
-        painter: DrawCoursePath(points: points, icons: icons),
+
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: (details) {
+          _handleTap(details.localPosition, courses, points, context);
+        },
+        child: CustomPaint(
+          size: Size.infinite,
+          painter: DrawCoursePath(points: points, icons: icons),
+        ),
       ),
     );
   }
