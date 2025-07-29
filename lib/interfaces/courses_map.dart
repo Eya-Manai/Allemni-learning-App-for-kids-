@@ -165,7 +165,7 @@ class _CoursesMapState extends State<CoursesMap> {
     );
   }
 
-  void _handleTap(
+  void _handleTaplogic(
     Offset tapPos,
     List<Map<String, dynamic>> courses,
     List<Offset> points,
@@ -208,7 +208,7 @@ class _CoursesMapState extends State<CoursesMap> {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTapDown: (details) {
-          _handleTap(details.localPosition, courses, points, context);
+          _handleTaplogic(details.localPosition, courses, points, context);
         },
         child: CustomPaint(
           size: Size.infinite,
