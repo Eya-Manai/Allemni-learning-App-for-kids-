@@ -54,11 +54,15 @@ class BildOptionBox extends StatelessWidget {
               ),
             ),
             if (locked)
-              const Positioned(
-                right: 8,
-                left: 8,
+              Positioned(
+                right: 10,
                 bottom: 5,
-                child: Icon(Icons.lock, color: AppColors.orange, size: 22),
+                child: Image.asset(
+                  "assets/images/lock.png",
+                  width: 22,
+                  height: 22,
+                  fit: BoxFit.contain,
+                ),
               ),
           ],
         ),
