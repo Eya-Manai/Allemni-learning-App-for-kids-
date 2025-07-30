@@ -1,4 +1,5 @@
 import 'package:allemni/constants/colors.dart';
+import 'package:allemni/routes/routes.dart';
 import 'package:allemni/widgets/draw_option_box.dart';
 import 'package:flutter/material.dart';
 
@@ -80,7 +81,7 @@ class CourseGamesPopUp extends StatelessWidget {
                     locked: false,
                     label: "الدرس",
                     ontap: () {
-                      Navigator.pop(context);
+                      Navigator.pushNamed(context, Routes.lesson);
                     },
                   ),
                 ],

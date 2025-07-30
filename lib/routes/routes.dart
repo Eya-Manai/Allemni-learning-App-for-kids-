@@ -5,6 +5,7 @@ import 'package:allemni/interfaces/choose_class.dart';
 import 'package:allemni/interfaces/choose_subject.dart';
 import 'package:allemni/interfaces/courses_map.dart';
 import 'package:allemni/interfaces/forgotpassword.dart';
+import 'package:allemni/interfaces/lesson.dart';
 import 'package:allemni/interfaces/login.dart';
 import 'package:allemni/interfaces/parenthome.dart';
 import 'package:allemni/interfaces/signup.dart';
@@ -22,6 +23,7 @@ class Routes {
   static const String chooseSubject = '/chooseSubject';
   static const String chooseModule = '/chooseModule';
   static const String coursesMap = '/coursesMap';
+  static const String lesson = '/lesson';
 
   static Map<String, WidgetBuilder> routes = {
     login: (context) => const LoginInterface(),
@@ -34,5 +36,6 @@ class Routes {
     chooseSubject: (context) => const ChooseSubject(),
     chooseModule: (context) => const ChooseModule(),
     coursesMap: (context) => const CoursesMap(),
+    lesson: (context) => const Lesson(),
   };
 }
