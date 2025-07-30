@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:ui' as ui;
+import 'package:allemni/models/lesson_model.dart';
 import 'package:allemni/services/course_services.dart';
 import 'package:allemni/widgets/course_games_popup.dart';
 import 'package:flutter/material.dart';
@@ -181,9 +182,18 @@ class _CoursesMapState extends State<CoursesMap> {
 
       if (distance <= radius) {
         final course = courses[i];
+
+        final lesson = LessonModel(
+          id: course['id'],
+          name: course['name'],
+          vdUrl: "",
+          resumeImagePath: "",
+          fileUrl: "",
+        );
         showDialog(
           context: context,
-          builder: (_) => CourseGamesPopUp(title: course["name"]),
+          builder: (_) =>
+              CourseGamesPopUp(title: course["name"], lesson: lesson),
         );
         break;
       }

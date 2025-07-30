@@ -9,6 +9,7 @@ import 'package:allemni/interfaces/lesson.dart';
 import 'package:allemni/interfaces/login.dart';
 import 'package:allemni/interfaces/parenthome.dart';
 import 'package:allemni/interfaces/signup.dart';
+import 'package:allemni/models/lesson_model.dart';
 
 import 'package:flutter/material.dart';
 
@@ -36,6 +37,9 @@ class Routes {
     chooseSubject: (context) => const ChooseSubject(),
     chooseModule: (context) => const ChooseModule(),
     coursesMap: (context) => const CoursesMap(),
-    lesson: (context) => const Lesson(),
+    lesson: (context) {
+      final lesson = ModalRoute.of(context)!.settings.arguments as LessonModel;
+      return Lesson(lesson: lesson);
+    },
   };
 }
