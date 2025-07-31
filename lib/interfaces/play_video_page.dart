@@ -49,16 +49,20 @@ class _PlayVedioPage extends State<PlayVideoPage> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text("مشاهدة الفيديو"),
+        title: const Text("مشاهدة الفيديو", textDirection: TextDirection.rtl),
       ),
-      body: Center(
-        child: isInitilized
-            ? AspectRatio(
-                aspectRatio: controller.value.aspectRatio,
-                child: VideoPlayer(controller),
-              )
-            : const CircularProgressIndicator(color: Colors.white),
-      ),
+      body: isInitilized
+          ? SizedBox.expand(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: controller.value.size.width,
+                  height: controller.value.size.height,
+                  child: VideoPlayer(controller),
+                ),
+              ),
+            )
+          : const Center(child: CircularProgressIndicator(color: Colors.white)),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
         child: Icon(
