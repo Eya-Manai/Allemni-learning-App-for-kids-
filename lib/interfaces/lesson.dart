@@ -1,4 +1,5 @@
 import 'package:allemni/constants/colors.dart';
+import 'package:allemni/interfaces/play_video_page.dart';
 import 'package:allemni/models/lesson_model.dart';
 import 'package:allemni/widgets/childnavbar.dart';
 import 'package:allemni/widgets/draw_yellow_button.dart';
@@ -34,11 +35,21 @@ class Lesson extends StatelessWidget {
               color: Colors.black12,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Center(
-              child: Icon(
-                Icons.play_circle_fill,
-                size: 80,
-                color: AppColors.primaryYellow,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => PlayVideoPage(vedioPath: lesson.vdUrl),
+                  ),
+                );
+              },
+              child: Center(
+                child: Icon(
+                  Icons.play_circle_fill,
+                  size: 80,
+                  color: AppColors.primaryYellow,
+                ),
               ),
             ),
           ),

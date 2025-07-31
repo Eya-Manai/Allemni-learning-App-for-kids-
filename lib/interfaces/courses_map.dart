@@ -43,7 +43,7 @@ class _CoursesMapState extends State<CoursesMap> {
         "image": "assets/images/lungs.png",
         "order": 3,
         "resumeImagePath": "assets/images/resumeBreathing.jpg",
-        "videoUrl": "assets/videos/air.mp4", //lzm yetbadel
+        "videoUrl": "assets/videos/breathing.mp4",
         "fileUrl": "assets/files/air.pdf", //lzm yetbadel
       },
       {
@@ -189,7 +189,7 @@ class _CoursesMapState extends State<CoursesMap> {
         final lesson = LessonModel(
           id: course['id'],
           name: course['name'],
-          vdUrl: course[''] ?? "",
+          vdUrl: course['videoUrl'] ?? "",
           resumeImagePath: course['resumeImagePath'],
           fileUrl: course[''] ?? "",
         );
