@@ -42,6 +42,9 @@ class _CoursesMapState extends State<CoursesMap> {
         "name": "التبادل الغازي في الرئتين",
         "image": "assets/images/lungs.png",
         "order": 3,
+        "resumeImagePath": "assets/images/resumeBreathing.jpg",
+        "videoUrl": "assets/videos/air.mp4", //lzm yetbadel
+        "fileUrl": "assets/files/air.pdf", //lzm yetbadel
       },
       {
         "id": "6sc5",
@@ -186,9 +189,9 @@ class _CoursesMapState extends State<CoursesMap> {
         final lesson = LessonModel(
           id: course['id'],
           name: course['name'],
-          vdUrl: "",
-          resumeImagePath: "",
-          fileUrl: "",
+          vdUrl: course[''] ?? "",
+          resumeImagePath: course['resumeImagePath'],
+          fileUrl: course[''] ?? "",
         );
         showDialog(
           context: context,
