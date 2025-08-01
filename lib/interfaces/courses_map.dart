@@ -45,6 +45,7 @@ class _CoursesMapState extends State<CoursesMap> {
         "resumeImagePath": "assets/images/resumeBreathing.jpg",
         "videoUrl": "assets/videos/breathing.mp4",
         "fileUrl": "assets/files/air.pdf", //lzm yetbadel
+        "vdImage": "assets/images/breathvdbackground.jpg",
       },
       {
         "id": "6sc5",
@@ -191,7 +192,8 @@ class _CoursesMapState extends State<CoursesMap> {
           name: course['name'],
           vdUrl: course['videoUrl'] ?? "",
           resumeImagePath: course['resumeImagePath'],
-          fileUrl: course[''] ?? "",
+          fileUrl: course['fileUrl'] ?? "",
+          vdImage: course['vdImage'] ?? "",
         );
         showDialog(
           context: context,

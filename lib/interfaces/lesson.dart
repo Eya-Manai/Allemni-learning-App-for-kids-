@@ -32,8 +32,16 @@ class Lesson extends StatelessWidget {
             height: 200,
 
             decoration: BoxDecoration(
-              color: Colors.black12,
               borderRadius: BorderRadius.circular(20),
+              image: lesson.vdImage.isNotEmpty
+                  ? DecorationImage(
+                      image: AssetImage(lesson.vdImage),
+                      fit: BoxFit.cover,
+                      onError: (exception, stackTrace) {
+                        debugPrint("can't load the image  ${lesson.vdImage}");
+                      },
+                    )
+                  : null,
             ),
             child: GestureDetector(
               onTap: () {

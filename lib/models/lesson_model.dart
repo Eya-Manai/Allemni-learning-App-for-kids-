@@ -4,6 +4,7 @@ class LessonModel {
   final String vdUrl;
   final String resumeImagePath;
   final String fileUrl;
+  final String vdImage;
 
   LessonModel({
     required this.id,
@@ -11,6 +12,7 @@ class LessonModel {
     required this.vdUrl,
     required this.resumeImagePath,
     required this.fileUrl,
+    required this.vdImage,
   });
 
   factory LessonModel.fromMap(Map<String, dynamic> map) {
@@ -20,6 +22,7 @@ class LessonModel {
       vdUrl: map['vdUrl'],
       resumeImagePath: map['resumeImagePath'],
       fileUrl: map['fileUrl'],
+      vdImage: map['vdImage'],
     );
   }
 
@@ -30,6 +33,7 @@ class LessonModel {
       "vdUrl": vdUrl,
       "resumeImagePath": resumeImagePath,
       "fileUrl": fileUrl,
+      "vdImage": vdImage,
     };
   }
 }

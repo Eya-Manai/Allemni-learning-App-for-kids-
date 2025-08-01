@@ -1,3 +1,4 @@
+import 'package:allemni/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -24,6 +25,8 @@ class _PlayVedioPage extends State<PlayVideoPage> {
     }
 
     controller.addListener(() {
+      if (!mounted) return;
+      setState(() {});
       if (controller.value.hasError) {
         debugPrint("video path error ${controller.value.errorDescription}");
       }
@@ -43,6 +46,14 @@ class _PlayVedioPage extends State<PlayVideoPage> {
     super.dispose();
   }
 
+  String formattedDuration(Duration position) {
+    String twodigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twodigits(position.inMinutes.remainder(60));
+    final seconds = twodigits(position.inSeconds.remainder(60));
+
+    return "$minutes:$seconds";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,15 +63,51 @@ class _PlayVedioPage extends State<PlayVideoPage> {
         title: const Text("مشاهدة الفيديو", textDirection: TextDirection.rtl),
       ),
       body: isInitilized
-          ? SizedBox.expand(
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: SizedBox(
-                  width: controller.value.size.width,
-                  height: controller.value.size.height,
-                  child: VideoPlayer(controller),
+          ? Stack(
+              children: [
+                SizedBox.expand(
+                  child: FittedBox(
+                    fit: BoxFit.cover,
+                    child: SizedBox(
+                      width: controller.value.size.width,
+                      height: controller.value.size.height,
+                      child: VideoPlayer(controller),
+                    ),
+                  ),
                 ),
-              ),
+                Positioned(
+                  bottom: 30,
+                  left: 20,
+                  right: 20,
+                  child: Column(
+                    children: [
+                      VideoProgressIndicator(
+                        controller,
+                        allowScrubbing: true,
+                        colors: VideoProgressColors(
+                          playedColor: AppColors.primaryYellow,
+                          bufferedColor: AppColors.white,
+                          backgroundColor: AppColors.lightblack,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            formattedDuration(controller.value.position),
+                            style: TextStyle(color: AppColors.white),
+                          ),
+                          Text(
+                            formattedDuration(controller.value.duration),
+                            style: TextStyle(color: AppColors.white),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             )
           : const Center(child: CircularProgressIndicator(color: Colors.white)),
       floatingActionButton: FloatingActionButton(
