@@ -19,7 +19,7 @@ class FileDownloadedService {
     return downloadsDir.path;
   }
 
-  static Future<void> saveFile(String sourcePath, String fileName) async {
+  static Future<bool> saveFile(String sourcePath, String fileName) async {
     try {
       if (await Permission.notification.isDenied) {
         await Permission.notification.request();
@@ -53,9 +53,10 @@ class FileDownloadedService {
       debugPrint("✅ File saved successfully at: $filePath");
 
       await _showDownloadNotification(fileName, filePath);
+      return true;
     } catch (e) {
       debugPrint("❌ Save error: $e");
-      rethrow;
+      return false;
     }
   }
 

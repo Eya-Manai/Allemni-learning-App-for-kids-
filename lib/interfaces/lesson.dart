@@ -121,16 +121,16 @@ class Lesson extends StatelessWidget {
                         onPressed: () async {
                           final pdfUrl = lesson.fileUrl;
                           final pdfName = "${lesson.name}.pdf";
-                          try {
-                            await FileDownloadedService.saveFile(
-                              pdfUrl,
-                              pdfName,
-                            );
+                          final sucess = await FileDownloadedService.saveFile(
+                            pdfUrl,
+                            pdfName,
+                          );
+                          if (sucess) {
                             showToast(
                               message: "تم تنزيل الملف بنجاح!",
                               color: AppColors.green,
                             );
-                          } catch (_) {
+                          } else {
                             showToast(
                               message: "فشل تنزيل الملف",
                               color: AppColors.orange,
