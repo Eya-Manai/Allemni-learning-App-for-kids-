@@ -1,6 +1,8 @@
 import 'package:allemni/constants/colors.dart';
+import 'package:allemni/constants/toast.dart';
 import 'package:allemni/interfaces/play_video_page.dart';
 import 'package:allemni/models/lesson_model.dart';
+import 'package:allemni/services/file_downloaded_service.dart';
 import 'package:allemni/widgets/childnavbar.dart';
 import 'package:allemni/widgets/draw_yellow_button.dart';
 import 'package:flutter/material.dart';
@@ -116,7 +118,25 @@ class Lesson extends StatelessWidget {
                     Center(
                       child: YellowButton(
                         text: "تحميل الملف ",
-                        onPressed: () {},
+                        onPressed: () async {
+                          final pdfUrl = lesson.fileUrl;
+                          final pdfName = "${lesson.name}.pdf";
+                          try {
+                            await FileDownloadedService.saveFile(
+                              pdfUrl,
+                              pdfName,
+                            );
+                            showToast(
+                              message: "تم تنزيل الملف بنجاح!",
+                              color: AppColors.green,
+                            );
+                          } catch (_) {
+                            showToast(
+                              message: "فشل تنزيل الملف",
+                              color: AppColors.orange,
+                            );
+                          }
+                        },
                       ),
                     ),
                     const SizedBox(height: 40),

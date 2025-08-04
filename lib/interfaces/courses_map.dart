@@ -44,7 +44,7 @@ class _CoursesMapState extends State<CoursesMap> {
         "order": 3,
         "resumeImagePath": "assets/images/resumeBreathing.jpg",
         "videoUrl": "assets/videos/breathing.mp4",
-        "fileUrl": "assets/files/air.pdf", //lzm yetbadel
+        "fileUrl": "assets/pdfs/Gas_exchange_in_the_lungs.pdf", //lzm yetbadel
         "vdImage": "assets/images/breathvdbackground.jpg",
       },
       {
