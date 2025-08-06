@@ -80,8 +80,8 @@ class FileDownloadedService {
 
     await flutterLocalNotificationsPlugin.show(
       0,
-      'Download complete',
-      '$fileName saved',
+      'تم تحميل الملف بنجاح',
+      '$fileName حمل',
       platformDetails,
       payload: filePath,
     );

@@ -53,16 +53,23 @@ class BildOptionBox extends StatelessWidget {
                 ],
               ),
             ),
-            if (locked)
+            if (label == "الالعاب")
               Positioned(
                 right: 10,
                 bottom: 5,
-                child: Image.asset(
-                  "assets/images/lock.png",
-                  width: 22,
-                  height: 22,
-                  fit: BoxFit.contain,
-                ),
+                child: locked
+                    ? Image.asset(
+                        "assets/images/lock.png",
+                        width: 22,
+                        height: 22,
+                        fit: BoxFit.contain,
+                      )
+                    : Image.asset(
+                        "assets/images/unlocked.png",
+                        width: 22,
+                        height: 22,
+                        fit: BoxFit.contain,
+                      ),
               ),
           ],
         ),

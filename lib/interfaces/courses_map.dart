@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:allemni/widgets/childnavbar.dart';
 import 'package:allemni/widgets/draw_background.dart';
 import 'package:allemni/widgets/draw_course_road.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CoursesMap extends StatefulWidget {
   const CoursesMap({super.key});
@@ -66,6 +67,7 @@ class _CoursesMapState extends State<CoursesMap> {
   late Future<void> _initialise;
   List<Map<String, dynamic>> courses = [];
   List<ui.Image> icons = [];
+  Set<String> ulockedLessons = {};
 
   @override
   void didChangeDependencies() {
@@ -175,7 +177,7 @@ class _CoursesMapState extends State<CoursesMap> {
     List<Map<String, dynamic>> courses,
     List<Offset> points,
     BuildContext context,
-  ) {
+  ) async {
     const double radius = 30;
 
     for (int i = 0; i < points.length; i++) {
@@ -186,6 +188,8 @@ class _CoursesMapState extends State<CoursesMap> {
 
       if (distance <= radius) {
         final course = courses[i];
+        final courseId = course["id"];
+        final prefrences = await SharedPreferences.getInstance();
 
         final lesson = LessonModel(
           id: course['id'],
@@ -195,10 +199,17 @@ class _CoursesMapState extends State<CoursesMap> {
           fileUrl: course['fileUrl'] ?? "",
           vdImage: course['vdImage'] ?? "",
         );
-        showDialog(
+
+        final isunlocked =
+            prefrences.getBool('lesson_unlocked_$courseId') ?? false;
+        if (!context.mounted) return;
+        await showDialog(
           context: context,
-          builder: (_) =>
-              CourseGamesPopUp(title: course["name"], lesson: lesson),
+          builder: (_) => CourseGamesPopUp(
+            title: course["name"],
+            lesson: lesson,
+            isGamelocked: !isunlocked,
+          ),
         );
         break;
       }

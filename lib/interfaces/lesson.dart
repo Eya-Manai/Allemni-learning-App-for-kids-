@@ -6,6 +6,7 @@ import 'package:allemni/services/file_downloaded_service.dart';
 import 'package:allemni/widgets/childnavbar.dart';
 import 'package:allemni/widgets/draw_yellow_button.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Lesson extends StatelessWidget {
   final LessonModel lesson;
@@ -127,9 +128,19 @@ class Lesson extends StatelessWidget {
                           );
                           if (sucess) {
                             showToast(
-                              message: "تم تنزيل الملف بنجاح!",
+                              message:
+                                  "  تم تنزيل الملف بنجاح! بامكانك فتح الالعاب الان",
                               color: AppColors.green,
                             );
+                            if (!context.mounted) return;
+                            final prefrences =
+                                await SharedPreferences.getInstance();
+                            prefrences.setBool(
+                              'lesson_unlocked_${lesson.id}',
+                              true,
+                            );
+                            if (!context.mounted) return;
+                            Navigator.pop(context, true);
                           } else {
                             showToast(
                               message: "فشل تنزيل الملف",

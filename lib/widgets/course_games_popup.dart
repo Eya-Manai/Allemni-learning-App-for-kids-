@@ -1,13 +1,14 @@
 import 'package:allemni/constants/colors.dart';
+import 'package:allemni/interfaces/lesson.dart';
 import 'package:allemni/models/lesson_model.dart';
-import 'package:allemni/routes/routes.dart';
 import 'package:allemni/widgets/draw_option_box.dart';
 import 'package:flutter/material.dart';
 
-class CourseGamesPopUp extends StatelessWidget {
+class CourseGamesPopUp extends StatefulWidget {
   final String title;
   final bool isGamelocked;
   final LessonModel lesson;
+
   const CourseGamesPopUp({
     super.key,
     required this.title,
@@ -15,6 +16,21 @@ class CourseGamesPopUp extends StatelessWidget {
     this.isGamelocked = true,
     required this.lesson,
   });
+
+  @override
+  State<CourseGamesPopUp> createState() => CourseGamePopUpState();
+}
+
+class CourseGamePopUpState extends State<CourseGamesPopUp> {
+  late bool isGamelocked;
+
+  @override
+  void initState() {
+    super.initState();
+    isGamelocked = widget.isGamelocked;
+    //ignore:avoid_Print
+    print("Popup opened with locked = $isGamelocked");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +53,7 @@ class CourseGamesPopUp extends StatelessWidget {
                 children: [
                   Center(
                     child: Text(
-                      title,
+                      widget.title,
                       style: TextStyle(
                         fontSize: 20,
                         color: AppColors.black,
@@ -84,13 +100,17 @@ class CourseGamesPopUp extends StatelessWidget {
                     image: "assets/images/lesson.png",
                     locked: false,
                     label: "الدرس",
-                    ontap: () {
+                    ontap: () async {
                       Navigator.pop(context);
-                      Navigator.pushNamed(
+                      final unlock = await Navigator.push<bool>(
                         context,
-                        Routes.lesson,
-                        arguments: lesson,
+                        MaterialPageRoute(
+                          builder: (_) => Lesson(lesson: widget.lesson),
+                        ),
                       );
+                      if (unlock == true && context.mounted) {
+                        Navigator.pop(context, true);
+                      }
                     },
                   ),
                 ],
