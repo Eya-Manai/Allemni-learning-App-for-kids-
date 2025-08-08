@@ -5,6 +5,7 @@ import 'package:allemni/interfaces/choose_class.dart';
 import 'package:allemni/interfaces/choose_subject.dart';
 import 'package:allemni/interfaces/courses_map.dart';
 import 'package:allemni/interfaces/forgotpassword.dart';
+import 'package:allemni/interfaces/game_start.dart';
 import 'package:allemni/interfaces/lesson.dart';
 import 'package:allemni/interfaces/login.dart';
 import 'package:allemni/interfaces/parenthome.dart';
@@ -25,6 +26,7 @@ class Routes {
   static const String chooseModule = '/chooseModule';
   static const String coursesMap = '/coursesMap';
   static const String lesson = '/lesson';
+  static const String gameStart = '/gameStart';
 
   static Map<String, WidgetBuilder> routes = {
     login: (context) => const LoginInterface(),
@@ -36,6 +38,7 @@ class Routes {
     chooseclass: (context) => const ChooseClass(),
     chooseSubject: (context) => const ChooseSubject(),
     chooseModule: (context) => const ChooseModule(),
+    gameStart: (context) => const GameStart(),
     coursesMap: (context) => const CoursesMap(),
     lesson: (context) {
       final lesson = ModalRoute.of(context)!.settings.arguments as LessonModel;

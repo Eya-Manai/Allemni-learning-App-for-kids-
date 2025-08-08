@@ -1,4 +1,5 @@
 import 'package:allemni/constants/colors.dart';
+import 'package:allemni/routes/routes.dart';
 import 'package:flutter/material.dart';
 
 class BildOptionBox extends StatelessWidget {
@@ -19,7 +20,14 @@ class BildOptionBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: ontap,
+      onTap: () {
+        if (!locked && ontap != null) {
+          ontap?.call();
+          if (label == "الالعاب") {
+            Navigator.pushNamed(context, Routes.gameStart);
+          }
+        }
+      },
       child: Container(
         width: 120,
         height: 140,
