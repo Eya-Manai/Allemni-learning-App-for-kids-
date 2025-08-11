@@ -38,11 +38,16 @@ class Routes {
     chooseclass: (context) => const ChooseClass(),
     chooseSubject: (context) => const ChooseSubject(),
     chooseModule: (context) => const ChooseModule(),
-    gameStart: (context) => const GameStart(),
     coursesMap: (context) => const CoursesMap(),
     lesson: (context) {
       final lesson = ModalRoute.of(context)!.settings.arguments as LessonModel;
       return Lesson(lesson: lesson);
+    },
+    gameStart: (context) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
+      return GameStart(childId: args['childId']);
     },
   };
 }

@@ -209,6 +209,7 @@ class _CoursesMapState extends State<CoursesMap> {
             title: course["name"],
             lesson: lesson,
             isGamelocked: !isunlocked,
+            childId: childId,
           ),
         );
         break;

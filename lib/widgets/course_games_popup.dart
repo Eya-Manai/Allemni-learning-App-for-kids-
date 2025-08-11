@@ -8,6 +8,7 @@ class CourseGamesPopUp extends StatefulWidget {
   final String title;
   final bool isGamelocked;
   final LessonModel lesson;
+  final String childId;
 
   const CourseGamesPopUp({
     super.key,
@@ -15,6 +16,7 @@ class CourseGamesPopUp extends StatefulWidget {
 
     this.isGamelocked = true,
     required this.lesson,
+    required this.childId,
   });
 
   @override
@@ -89,6 +91,7 @@ class CourseGamePopUpState extends State<CourseGamesPopUp> {
                     image: "assets/images/quiz.png",
                     locked: isGamelocked,
                     label: "الالعاب",
+                    childId: widget.childId,
                     ontap: isGamelocked
                         ? null
                         : () {
@@ -100,6 +103,7 @@ class CourseGamePopUpState extends State<CourseGamesPopUp> {
                     image: "assets/images/lesson.png",
                     locked: false,
                     label: "الدرس",
+                    childId: widget.childId,
                     ontap: () async {
                       Navigator.pop(context);
                       final unlock = await Navigator.push<bool>(

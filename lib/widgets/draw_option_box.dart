@@ -8,6 +8,7 @@ class BildOptionBox extends StatelessWidget {
   final Color color;
   final bool locked;
   final VoidCallback? ontap;
+  final String childId;
 
   const BildOptionBox({
     super.key,
@@ -16,6 +17,7 @@ class BildOptionBox extends StatelessWidget {
     required this.color,
     required this.locked,
     required this.ontap,
+    required this.childId,
   });
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,11 @@ class BildOptionBox extends StatelessWidget {
         if (!locked && ontap != null) {
           ontap?.call();
           if (label == "الالعاب") {
-            Navigator.pushNamed(context, Routes.gameStart);
+            Navigator.pushNamed(
+              context,
+              Routes.gameStart,
+              arguments: {'childId': childId},
+            );
           }
         }
       },

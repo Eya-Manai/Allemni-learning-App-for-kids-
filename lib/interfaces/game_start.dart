@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:allemni/constants/colors.dart';
+import 'package:allemni/models/chracters_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class GameStart extends StatefulWidget {
-  const GameStart({super.key});
+  final String childId;
+  const GameStart({super.key, required this.childId});
 
   @override
   State<GameStart> createState() => _GameStarState();
@@ -13,10 +16,38 @@ class GameStart extends StatefulWidget {
 class _GameStarState extends State<GameStart> {
   double progress = 00;
   bool isLoadingComplete = false;
+  ChractersModel? chractersModel;
+
+  Future<void> loadCharacters() async {
+    await Future.delayed(Duration(milliseconds: 500));
+
+    try {
+      final childDoc = await FirebaseFirestore.instance
+          .collection("Children")
+          .doc(widget.childId)
+          .get();
+
+      if (childDoc.exists) {
+        final data = childDoc.data();
+        if (data != null && data.containsKey("character")) {
+          final Map<String, dynamic> characterData = Map<String, dynamic>.from(
+            data['character'],
+          );
+          final loadcharac = ChractersModel.fromFirestore(characterData);
+          setState(() {
+            chractersModel = loadcharac;
+          });
+        }
+      }
+    } catch (e) {
+      throw Exception("can't loading current child id $e");
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    loadCharacters();
     Timer.periodic(Duration(milliseconds: 100), (timer) {
       if (progress >= 1.0) {
         timer.cancel();
@@ -33,9 +64,28 @@ class _GameStarState extends State<GameStart> {
 
   @override
   Widget build(BuildContext context) {
+    if (chractersModel == null) {
+      return Scaffold(
+        backgroundColor: AppColors.primaryYellow,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "تعذر تحميل الشخصية",
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+              SizedBox(height: 30),
+              CircularProgressIndicator(color: AppColors.green),
+            ],
+          ),
+        ),
+      );
+    }
+
     final String emojiPath = isLoadingComplete
-        ? "assets/images/hearteyedcat.png"
-        : "assets/images/toti.png";
+        ? chractersModel!.heartedeyed
+        : chractersModel!.smiling;
     return Scaffold(
       backgroundColor: AppColors.primaryYellow,
       body: Center(
@@ -76,9 +126,9 @@ class _GameStarState extends State<GameStart> {
             ),
             SizedBox(height: 20),
             Text(
-              'تحميل البيانات ${((progress * 100).clamp(0, 100)).toInt()}%',
+              'تحميل البيانات ${((progress * 100).clamp(0, 100)).toInt()} %',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 17,
                 color: Colors.white,
                 fontFamily: 'Arial',
               ),
