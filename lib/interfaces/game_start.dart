@@ -54,6 +54,15 @@ class _GameStarState extends State<GameStart> {
         setState(() {
           isLoadingComplete = true;
         });
+
+        Future.delayed(Duration(seconds: 1), () {
+          if (!mounted) return;
+          Navigator.pushNamed(context, '/gameLevels');
+        });
+      } else if (progress >= 0.95) {
+        setState(() {
+          progress = 1.0;
+        });
       } else {
         setState(() {
           progress += 0.05;
